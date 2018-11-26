@@ -1,4 +1,4 @@
-package com.android.sazid.simpleeventcalendar
+package com.github.sazid1462.simpleeventcalendar
 
 import org.junit.Test
 

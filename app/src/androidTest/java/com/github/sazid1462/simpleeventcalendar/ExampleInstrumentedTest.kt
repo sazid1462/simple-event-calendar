@@ -1,4 +1,4 @@
-package com.android.sazid.simpleeventcalendar
+package com.github.sazid1462.simpleeventcalendar
 
 import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
@@ -19,6 +19,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getTargetContext()
-        assertEquals("com.android.sazid.simpleeventcalendar", appContext.packageName)
+        assertEquals("com.github.sazid1462.simpleeventcalendar", appContext.packageName)
     }
 }
