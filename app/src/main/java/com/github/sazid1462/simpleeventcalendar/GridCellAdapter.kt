@@ -12,23 +12,6 @@ import androidx.core.content.ContextCompat.getSystemService
 import android.view.LayoutInflater
 import android.widget.TextView
 
-
-
-
-
-// references to our images
-private val mDays = arrayOf<Int>(
-    31, 28, 31, 30, 31, 30,
-    31, 31, 30, 31, 30, 31
-)
-
-private val mMonths = arrayOf(
-    "January", "February", "March", "April",
-    "May", "June", "July", "August", "September",
-    "October", "November", "December"
-)
-
-
 class GridCellAdapter (private val context: Context, private val month: Int, private val year: Int) : BaseAdapter() {
 
     // First, let's obtain an instance of GregorianCalendar.

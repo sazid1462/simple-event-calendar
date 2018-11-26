@@ -21,4 +21,5 @@
     <color name="lightgreen">#336666</color>
     <color name="orrange">#e33d1b</color>
     <color name="darkorrange">#cc2303</color>
+    <color name="calendar_nav_btn">#333</color>
 </resources>
