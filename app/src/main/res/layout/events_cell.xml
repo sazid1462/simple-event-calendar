@@ -7,20 +7,10 @@
     android:orientation="vertical">
 
     <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/day_cell_text"
+        android:id="@+id/event_cell_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:text="@string/dummy"
         android:textSize="12sp" />
-
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/date_cell_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:text="@string/dummy"
-        android:textAlignment="center"
-        android:gravity="center"
-        android:textSize="18sp" />
 </androidx.appcompat.widget.LinearLayoutCompat>

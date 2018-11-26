@@ -6,13 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.BaseAdapter
-import android.widget.ImageView
 import java.util.*
-import androidx.core.content.ContextCompat.getSystemService
 import android.view.LayoutInflater
 import android.widget.TextView
 
-class GridCellAdapter (private val context: Context, private val month: Int, private val year: Int) : BaseAdapter() {
+class EventsGridCellAdapter (private val context: Context) : BaseAdapter() {
 
     // First, let's obtain an instance of GregorianCalendar.
     private var cal: GregorianCalendar = GregorianCalendar()
@@ -21,12 +19,12 @@ class GridCellAdapter (private val context: Context, private val month: Int, pri
         // The isLeapYear(int year) method will return true for leap
         // year and otherwise return false. In this example the message
         // will be printed as 2016 is a leap year.
-        Log.d("GridCellAdapter", "Month ${mMonths[month]} year $year")
-        if (month==1 && cal.isLeapYear(year)) {
-            System.out.println("The year $year is a leap year!")
-            return 29
-        }
-        return mDays[month]
+        Log.d("CalendarGridCellAdapter", "Month ${mMonths[cal.get(Calendar.MONTH)]} Year ${cal.get(Calendar.YEAR)}")
+//        if (month==1 && cal.isLeapYear(year)) {
+//            System.out.println("The year $year is a leap year!")
+//            return 29 + 7
+//        }
+        return 7
     }
 
     override fun getItem(position: Int): Any? = null
@@ -35,20 +33,21 @@ class GridCellAdapter (private val context: Context, private val month: Int, pri
 
     // create a new ImageView for each item referenced by the Adapter
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        val dateCellView: View
+        val cellView: View
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         if (convertView == null) {
             // if it's not recycled, initialize some attributes
-            dateCellView = inflater.inflate(R.layout.date_cell, parent, false)
-            dateCellView.layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, 85)
-            val textViewAndroid = dateCellView.findViewById(R.id.android_gridview_text) as TextView
-            textViewAndroid.text = (position+1).toString()
-            dateCellView.setPadding(1, 1, 1, 1)
+            cellView = inflater.inflate(R.layout.events_cell, parent, false)
+            cellView.layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, 85)
+            val textViewEvent = cellView.findViewById(R.id.event_cell_text) as TextView
+            textViewEvent.text = (7 * cal.get(GregorianCalendar.WEEK_OF_MONTH) + position+1).toString()
+
+            cellView.setPadding(1, 1, 1, 1)
         } else {
-            dateCellView = convertView
+            cellView = convertView
         }
 
-        return dateCellView
+        return cellView
     }
 
 }

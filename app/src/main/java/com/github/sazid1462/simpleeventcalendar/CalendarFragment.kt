@@ -25,6 +25,11 @@ val mMonths = arrayOf(
     "October", "November", "December"
 )
 
+val mDaysOfWeek = arrayOf(
+    "SUN", "MON", "TUE",
+    "WED", "THU", "FRI", "SAT"
+)
+
 /**
  * A placeholder fragment containing a simple calendar view.
  */
@@ -46,10 +51,20 @@ class CalendarFragment: Fragment() {
         val monthViewer: TextView = rootView.findViewById(R.id.month_viewer)
         monthViewer.text = "${mMonths[calendar[Calendar.MONTH]]} ${calendar[Calendar.YEAR]}"
 
-        val gridview: GridView = rootView.findViewById(R.id.calendar)
-        gridview.adapter = GridCellAdapter(rootView.context, calendar.get(Calendar.MONTH), calendar.get(Calendar.YEAR))
+        // GridView for showing the dates
+        val dateGridview: GridView = rootView.findViewById(R.id.calendar)
+        dateGridview.adapter = CalendarGridCellAdapter(rootView.context)
 
-        gridview.onItemClickListener =
+        dateGridview.onItemClickListener =
+                OnItemClickListener { parent, v, position, id ->
+                    Toast.makeText(rootView.context, "$position", Toast.LENGTH_SHORT).show()
+                }
+
+        // GridView for showing the events
+        val eventGridview: GridView = rootView.findViewById(R.id.events)
+        eventGridview.adapter = EventsGridCellAdapter(rootView.context)
+
+        eventGridview.onItemClickListener =
                 OnItemClickListener { parent, v, position, id ->
                     Toast.makeText(rootView.context, "$position", Toast.LENGTH_SHORT).show()
                 }
