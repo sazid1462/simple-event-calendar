@@ -13,15 +13,19 @@ import android.widget.TextView
 class EventsGridCellAdapter (private val context: Context, private val dateList: ArrayList<Pair<Int, Boolean>>) : BaseAdapter() {
 
     // First, let's obtain an instance of GregorianCalendar.
-    private var cal: GregorianCalendar = GregorianCalendar()
+    private var cal = GregorianCalendar.getInstance()
 
     override fun getCount(): Int {
-        return NO_OF_DAYS
+        return 24 * 8
     }
 
-    override fun getItem(position: Int): Any? = null
+    override fun getItem(position: Int): Any? {
+        return (position - position/8).toString()
+    }
 
-    override fun getItemId(position: Int): Long = 0L
+    override fun getItemId(position: Int): Long {
+        return (position - position/8).toLong()
+    }
 
     // create a new ImageView for each item referenced by the Adapter
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
@@ -31,12 +35,23 @@ class EventsGridCellAdapter (private val context: Context, private val dateList:
             // if it's not recycled, initialize some attributes
             cellView = inflater.inflate(R.layout.events_cell, parent, false)
             cellView.layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, 85)
-            val textViewEvent = cellView.findViewById(R.id.event_cell_text) as TextView
-            textViewEvent.text = (7 * cal.get(GregorianCalendar.WEEK_OF_MONTH) + position+1).toString()
 
             cellView.setPadding(1, 1, 1, 1)
         } else {
             cellView = convertView
+        }
+
+        if (position % 8 == 0) {
+            val textViewEvent = cellView.findViewById(R.id.event_cell_text) as TextView
+            val tim = (position/8)
+            val txt: String
+            txt = if ((tim+1) < 12) "${tim+1} AM" else "${tim+1} PM"
+            textViewEvent.text = txt
+            cellView.background = context.getDrawable(R.color.lightgray02)
+        } else {
+            val textViewEvent = cellView.findViewById(R.id.event_cell_text) as TextView
+            textViewEvent.text = (position - position/8).toString()
+            cellView.background = null
         }
 
         return cellView

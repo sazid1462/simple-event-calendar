@@ -17,42 +17,47 @@ class CalendarGridCellAdapter (private val context: Context, private val dateLis
     private var cal = GregorianCalendar.getInstance()
 
     override fun getCount(): Int {
-        return NO_OF_DAYS
+        return NO_OF_DAYS + 1
     }
 
-    override fun getItem(position: Int): Any? {
-        return mDaysOfWeek[(cal.firstDayOfWeek + position - 1) % NO_OF_DAYS]
-    }
+    override fun getItem(position: Int): Any? = null
 
-    override fun getItemId(position: Int): Long {
-        return ((cal.firstDayOfWeek + position - 1) % NO_OF_DAYS).toLong()
-    }
+    override fun getItemId(position: Int): Long = 0L
 
     // create a new ImageView for each item referenced by the Adapter
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val cellView: View
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        if (position == 0) {
+            if (convertView == null) {
+                cellView = inflater.inflate(R.layout.date_cell, parent, false)
+                cellView.layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, 185)
+            } else {
+                cellView = convertView
+            }
+            return cellView
+        }
         if (convertView == null) {
             // if it's not recycled, initialize some attributes
             cellView = inflater.inflate(R.layout.date_cell, parent, false)
             cellView.layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, 185)
 
-            val textViewDay = cellView.findViewById(R.id.day_cell_text) as TextView
-            textViewDay.text = mDaysOfWeek[(cal.firstDayOfWeek + position - 1) % NO_OF_DAYS]
-
-            val textViewDate = cellView.findViewById(R.id.date_cell_text) as TextView
-            textViewDate.text = dateList[position].first.toString()
-
-            if (dateList[position].second) {
-                textViewDate.setTextColor(context.getColor(R.color.white))
-                textViewDate.background = context.getDrawable(R.drawable.circular_selection)
-            } else {
-                textViewDate.background = context.getDrawable(R.drawable.circular_background)
-            }
-
             cellView.setPadding(1, 1, 1, 1)
         } else {
             cellView = convertView
+        }
+
+        val textViewDay = cellView.findViewById(R.id.day_cell_text) as TextView
+        textViewDay.text = mDaysOfWeek[(NO_OF_DAYS + (cal.firstDayOfWeek + position - 2)) % NO_OF_DAYS]
+
+        val textViewDate = cellView.findViewById(R.id.date_cell_text) as TextView
+        textViewDate.text = dateList[position-1].first.toString()
+
+        if (dateList[position-1].second) {
+            textViewDate.setTextColor(context.getColor(R.color.white))
+            textViewDate.background = context.getDrawable(R.drawable.circular_selection)
+        } else {
+            textViewDate.background = context.getDrawable(R.drawable.circular_background)
         }
 
         return cellView
