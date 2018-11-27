@@ -1,6 +1,8 @@
 package com.github.sazid1462.simpleeventcalendar
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
@@ -25,6 +27,7 @@ class CalendarGridCellAdapter (private val context: Context, private val dateLis
     override fun getItemId(position: Int): Long = 0L
 
     // create a new ImageView for each item referenced by the Adapter
+    @SuppressLint("SetTextI18n")
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val cellView: View
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -35,6 +38,8 @@ class CalendarGridCellAdapter (private val context: Context, private val dateLis
             } else {
                 cellView = convertView
             }
+            val textViewDate = cellView.findViewById(R.id.date_cell_text) as TextView
+            textViewDate.text = "24H"
             return cellView
         }
         if (convertView == null) {

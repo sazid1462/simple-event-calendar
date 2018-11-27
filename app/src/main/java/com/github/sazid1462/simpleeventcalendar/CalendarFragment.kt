@@ -109,24 +109,4 @@ class CalendarFragment: Fragment() {
         Log.d(tag, "Destroying View …")
         super.onDestroy()
     }
-
-    companion object {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private val ARG_SECTION_NUMBER = "section_number"
-
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        fun newInstance(sectionNumber: Int): CalendarFragment {
-            val fragment = CalendarFragment()
-            val args = Bundle()
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber)
-            fragment.arguments = args
-            return fragment
-        }
-    }
 }

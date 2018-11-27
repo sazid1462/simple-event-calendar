@@ -34,7 +34,7 @@ class EventsGridCellAdapter (private val context: Context, private val dateList:
         if (convertView == null) {
             // if it's not recycled, initialize some attributes
             cellView = inflater.inflate(R.layout.events_cell, parent, false)
-            cellView.layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, 85)
+            cellView.layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, 120)
 
             cellView.setPadding(1, 1, 1, 1)
         } else {
@@ -45,7 +45,7 @@ class EventsGridCellAdapter (private val context: Context, private val dateList:
             val textViewEvent = cellView.findViewById(R.id.event_cell_text) as TextView
             val tim = (position/8)
             val txt: String
-            txt = if ((tim+1) < 12) "${tim+1} AM" else "${tim+1} PM"
+            txt = "$tim to ${tim+1}"
             textViewEvent.text = txt
             cellView.background = context.getDrawable(R.color.lightgray02)
         } else {
