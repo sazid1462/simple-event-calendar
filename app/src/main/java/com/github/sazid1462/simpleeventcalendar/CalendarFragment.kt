@@ -16,30 +16,6 @@ import java.util.*
 import kotlin.math.abs
 
 
-
-const val NO_OF_DAYS: Int = 7
-
-// references to our images
-val mDays = arrayOf<Int>(
-    31, 28, 31, 30, 31, 30,
-    31, 31, 30, 31, 30, 31
-)
-
-val mMonths = arrayOf(
-    "January", "February", "March", "April",
-    "May", "June", "July", "August", "September",
-    "October", "November", "December"
-)
-
-val mDaysOfWeek = arrayOf(
-    "SUN", "MON", "TUE",
-    "WED", "THU", "FRI", "SAT"
-)
-
-val weekToMonth = arrayOf(
-    4, 8, 13, 17, 22, 26, 30, 35, 39, 43, 48, 52
-)
-
 /**
  * A placeholder fragment containing a simple calendar view.
  */
@@ -58,7 +34,9 @@ class CalendarFragment: Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(tag, "On Create")
-        prepareCurrentWeek(-abs(cal.get(GregorianCalendar.DAY_OF_WEEK) - cal.firstDayOfWeek))
+        AsyncRunner {
+            prepareCurrentWeek(-abs(cal.get(GregorianCalendar.DAY_OF_WEEK) - cal.firstDayOfWeek))
+        }.execute()
     }
 
     private fun prepareCurrentWeek(distance: Int) {
@@ -84,41 +62,46 @@ class CalendarFragment: Fragment() {
         super.onCreateView(inflater, container, savedInstanceState)
         val rootView = inflater.inflate(R.layout.fragment_calendar, container, false)
 
-        val monthViewer: TextView = rootView.findViewById(R.id.month_viewer)
-        monthViewer.text = monthViewerText
-
-        // GridView for showing the dates
-        val dateGridview: GridView = rootView.findViewById(R.id.calendar)
-        dateGridview.adapter = CalendarGridCellAdapter(rootView.context, dateList)
-
-        dateGridview.onItemClickListener =
-                OnItemClickListener { parent, v, position, id ->
-                    Toast.makeText(rootView.context, "$position", Toast.LENGTH_SHORT).show()
-                }
-
-        // GridView for showing the events
-        val eventGridview: GridView = rootView.findViewById(R.id.events)
-        eventGridview.adapter = EventsGridCellAdapter(rootView.context, dateList)
-
-        eventGridview.onItemClickListener =
-                OnItemClickListener { parent, v, position, id ->
-                    Toast.makeText(rootView.context, "$position", Toast.LENGTH_SHORT).show()
-                }
-
-        val nextWeek: MaterialButton = rootView.findViewById(R.id.next_button)
-        nextWeek.setOnClickListener { v ->
-            prepareCurrentWeek(0)
+        AsyncRunner {
+            val monthViewer: TextView = rootView.findViewById(R.id.month_viewer)
             monthViewer.text = monthViewerText
-            dateGridview.adapter = CalendarGridCellAdapter(rootView.context, dateList)
-        }
 
-        val prevWeek: MaterialButton = rootView.findViewById(R.id.prev_button)
-        prevWeek.setOnClickListener { v ->
-            prepareCurrentWeek(-14)
-            monthViewer.text = monthViewerText
+            // GridView for showing the dates
+            val dateGridview: GridView = rootView.findViewById(R.id.calendar)
             dateGridview.adapter = CalendarGridCellAdapter(rootView.context, dateList)
-        }
 
+            dateGridview.onItemClickListener =
+                    OnItemClickListener { parent, v, position, id ->
+                        Toast.makeText(rootView.context, "$position", Toast.LENGTH_SHORT).show()
+                    }
+
+            // GridView for showing the events
+            val eventGridview: GridView = rootView.findViewById(R.id.events)
+            eventGridview.adapter = EventsGridCellAdapter(rootView.context, dateList)
+
+            eventGridview.onItemClickListener =
+                    OnItemClickListener { parent, v, position, id ->
+                        Toast.makeText(rootView.context, "$position", Toast.LENGTH_SHORT).show()
+                    }
+
+            val nextWeek: MaterialButton = rootView.findViewById(R.id.next_button)
+            nextWeek.setOnClickListener { v ->
+                activity?.runOnUiThread {
+                    prepareCurrentWeek(0)
+                    monthViewer.text = monthViewerText
+                    dateGridview.adapter = CalendarGridCellAdapter(rootView.context, dateList)
+                }
+            }
+
+            val prevWeek: MaterialButton = rootView.findViewById(R.id.prev_button)
+            prevWeek.setOnClickListener { v ->
+                activity?.runOnUiThread {
+                    prepareCurrentWeek(-14)
+                    monthViewer.text = monthViewerText
+                    dateGridview.adapter = CalendarGridCellAdapter(rootView.context, dateList)
+                }
+            }
+        }.execute()
         return rootView
     }
 
