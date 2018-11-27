@@ -13,13 +13,18 @@ import android.view.LayoutInflater
 import android.widget.TextView
 import kotlin.collections.ArrayList
 
-class CalendarGridCellAdapter (private val context: Context, private val dateList: ArrayList<Pair<Int, Boolean>>) : BaseAdapter() {
+class CalendarGridCellAdapter (private val context: Context, private var dateList: ArrayList<Pair<Int, Boolean>>) : BaseAdapter() {
 
     // First, let's obtain an instance of GregorianCalendar.
     private var cal = GregorianCalendar.getInstance()
 
     override fun getCount(): Int {
         return NO_OF_DAYS + 1
+    }
+
+    fun setDateList(dateList: ArrayList<Pair<Int, Boolean>>) {
+        this.dateList.addAll(dateList)
+        notifyDataSetInvalidated()
     }
 
     override fun getItem(position: Int): Any? = null
@@ -63,6 +68,7 @@ class CalendarGridCellAdapter (private val context: Context, private val dateLis
             textViewDate.setTextColor(context.getColor(R.color.white))
             textViewDate.background = context.getDrawable(R.drawable.circular_selection)
         } else {
+            textViewDate.setTextColor(context.getColor(R.color.black))
             textViewDate.background = context.getDrawable(R.drawable.circular_background)
         }
 

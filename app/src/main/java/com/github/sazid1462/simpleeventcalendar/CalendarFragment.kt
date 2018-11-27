@@ -11,7 +11,6 @@ import android.widget.GridView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
 import com.google.android.material.button.MaterialButton
 import java.util.*
 import kotlin.math.abs
@@ -20,7 +19,7 @@ import kotlin.math.abs
 /**
  * A placeholder fragment containing a simple calendar view.
  */
-class CalendarFragment: Fragment() {
+class CalendarFragment : Fragment() {
 
     private val TODAY_DAY = cal.get(GregorianCalendar.DAY_OF_MONTH)
     private val TODAY_MONTH = cal.get(GregorianCalendar.MONTH)
@@ -30,9 +29,7 @@ class CalendarFragment: Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(tag, "On Create")
-        AsyncRunner {
-            prepareCurrentWeek(-abs(cal.get(GregorianCalendar.DAY_OF_WEEK) - cal.firstDayOfWeek))
-        }.execute()
+        prepareCurrentWeek(-abs(cal.get(GregorianCalendar.DAY_OF_WEEK) - cal.firstDayOfWeek))
     }
 
     private fun prepareCurrentWeek(distance: Int) {
@@ -44,8 +41,8 @@ class CalendarFragment: Fragment() {
         Log.d("CalendarFragment", cal.time.toString())
         for (i in 0..6) {
             val x = cal.get(GregorianCalendar.DAY_OF_MONTH)
-            val isToday = cal.get(GregorianCalendar.DAY_OF_MONTH)==TODAY_DAY &&
-                    cal.get(GregorianCalendar.MONTH)==TODAY_MONTH && cal.get(GregorianCalendar.YEAR)==TODAY_YEAR
+            val isToday = cal.get(GregorianCalendar.DAY_OF_MONTH) == TODAY_DAY &&
+                    cal.get(GregorianCalendar.MONTH) == TODAY_MONTH && cal.get(GregorianCalendar.YEAR) == TODAY_YEAR
 
             dateList.add(Pair(x, isToday))
             cal.add(GregorianCalendar.DAY_OF_MONTH, 1)
@@ -59,53 +56,77 @@ class CalendarFragment: Fragment() {
     }
 
     @SuppressLint("SetTextI18n")
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         super.onCreateView(inflater, container, savedInstanceState)
         val rootView = inflater.inflate(R.layout.fragment_calendar, container, false)
 
-        AsyncRunner {
+        activity?.runOnUiThread {
             val monthViewer: TextView = rootView.findViewById(R.id.month_viewer)
             monthViewer.text = monthViewerText
-
-            // GridView for showing the dates
-            val dateGridview: GridView = rootView.findViewById(R.id.calendar)
-            dateGridview.adapter = CalendarGridCellAdapter(rootView.context, dateList)
-
-            dateGridview.onItemClickListener =
-                    OnItemClickListener { parent, v, position, id ->
-                        Toast.makeText(rootView.context, "$position", Toast.LENGTH_SHORT).show()
-                    }
-
-            // GridView for showing the events
-            val eventGridview: GridView = rootView.findViewById(R.id.events)
-            eventGridview.adapter = EventsGridCellAdapter(rootView.context, dateList)
-
-            eventGridview.onItemClickListener =
-                    OnItemClickListener { parent, v, position, id ->
-                        Toast.makeText(rootView.context, "$position", Toast.LENGTH_SHORT).show()
-                        showCreateEventDialog()
-                    }
-
-            val nextWeek: MaterialButton = rootView.findViewById(R.id.next_button)
-            nextWeek.setOnClickListener { v ->
-                activity?.runOnUiThread {
-                    prepareCurrentWeek(0)
-                    monthViewer.text = monthViewerText
-                    dateGridview.adapter = CalendarGridCellAdapter(rootView.context, dateList)
-                }
-            }
-
-            val prevWeek: MaterialButton = rootView.findViewById(R.id.prev_button)
-            prevWeek.setOnClickListener { v ->
-                activity?.runOnUiThread {
-                    prepareCurrentWeek(-14)
-                    monthViewer.text = monthViewerText
-                    dateGridview.adapter = CalendarGridCellAdapter(rootView.context, dateList)
-                }
-            }
-        }.execute()
+            val dateGridview: GridView = registerDateGridView(rootView)
+            val eventsGridview: GridView = registerEventsGridView(rootView)
+            registerCalendarNavButtons(rootView, monthViewer, dateGridview, eventsGridview)
+        }
         return rootView
+    }
+
+    private fun registerCalendarNavButtons(
+        rootView: View,
+        monthViewer: TextView,
+        dateGridview: GridView,
+        eventsGridview: GridView
+    ) {
+        val nextWeek: MaterialButton = rootView.findViewById(R.id.next_button)
+        nextWeek.setOnClickListener { v ->
+            activity?.runOnUiThread {
+                AsyncRunner({
+                    prepareCurrentWeek(0)
+                }, {
+                    monthViewer.text = monthViewerText
+                    (dateGridview.adapter as CalendarGridCellAdapter).setDateList(dateList)
+                }).execute()
+            }
+        }
+
+        val prevWeek: MaterialButton = rootView.findViewById(R.id.prev_button)
+        prevWeek.setOnClickListener { v ->
+            activity?.runOnUiThread {
+                AsyncRunner({
+                    prepareCurrentWeek(-14)
+                }, {
+                    monthViewer.text = monthViewerText
+                    (dateGridview.adapter as CalendarGridCellAdapter).setDateList(dateList)
+                }).execute()
+            }
+        }
+    }
+
+    private fun registerEventsGridView(rootView: View): GridView {
+        // GridView for showing the events
+        val eventGridview: GridView = rootView.findViewById(R.id.events)
+        eventGridview.adapter = EventsGridCellAdapter(rootView.context, dateList)
+
+        eventGridview.onItemClickListener =
+                OnItemClickListener { parent, v, position, id ->
+                    Toast.makeText(rootView.context, "$position", Toast.LENGTH_SHORT).show()
+                    showCreateEventDialog()
+                }
+        return eventGridview
+    }
+
+    private fun registerDateGridView(rootView: View): GridView {
+        // GridView for showing the dates
+        val dateGridview: GridView = rootView.findViewById(R.id.calendar)
+        dateGridview.adapter = CalendarGridCellAdapter(rootView.context, dateList)
+
+        dateGridview.onItemClickListener =
+                OnItemClickListener { parent, v, position, id ->
+                    Toast.makeText(rootView.context, "$position", Toast.LENGTH_SHORT).show()
+                }
+        return dateGridview
     }
 
     override fun onDestroy() {
@@ -116,7 +137,8 @@ class CalendarFragment: Fragment() {
     companion object {
         private val cal = GregorianCalendar.getInstance()
         private var dateList: ArrayList<Pair<Int, Boolean>> = ArrayList(7)
-        private var monthViewerText: String = "${mMonths[cal.get(GregorianCalendar.MONTH)]} ${cal.get(GregorianCalendar.YEAR)}"
+        private var monthViewerText: String =
+            "${mMonths[cal.get(GregorianCalendar.MONTH)]} ${cal.get(GregorianCalendar.YEAR)}"
 
         /**
          * Returns a new instance of this fragment for the given section
