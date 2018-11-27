@@ -10,21 +10,13 @@ import java.util.*
 import android.view.LayoutInflater
 import android.widget.TextView
 
-class EventsGridCellAdapter (private val context: Context) : BaseAdapter() {
+class EventsGridCellAdapter (private val context: Context, private val dateList: ArrayList<Pair<Int, Boolean>>) : BaseAdapter() {
 
     // First, let's obtain an instance of GregorianCalendar.
     private var cal: GregorianCalendar = GregorianCalendar()
 
     override fun getCount(): Int {
-        // The isLeapYear(int year) method will return true for leap
-        // year and otherwise return false. In this example the message
-        // will be printed as 2016 is a leap year.
-        Log.d("CalendarGridCellAdapter", "Month ${mMonths[cal.get(Calendar.MONTH)]} Year ${cal.get(Calendar.YEAR)}")
-//        if (month==1 && cal.isLeapYear(year)) {
-//            System.out.println("The year $year is a leap year!")
-//            return 29 + 7
-//        }
-        return 7
+        return NO_OF_DAYS
     }
 
     override fun getItem(position: Int): Any? = null
