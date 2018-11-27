@@ -51,7 +51,7 @@ class EventsGridCellAdapter (private val context: Context, private val dateList:
         } else {
             val textViewEvent = cellView.findViewById(R.id.event_cell_text) as TextView
             textViewEvent.text = (position - position/8).toString()
-            cellView.background = null
+            cellView.background = context.getDrawable(R.drawable.rect_border)
         }
 
         return cellView
