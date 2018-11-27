@@ -30,8 +30,8 @@ class EventsGridCellAdapter (private val context: Context, private val dateList:
     // create a new ImageView for each item referenced by the Adapter
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val cellView: View
-        val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         if (convertView == null) {
+            val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             // if it's not recycled, initialize some attributes
             cellView = inflater.inflate(R.layout.events_cell, parent, false)
             cellView.layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, 120)

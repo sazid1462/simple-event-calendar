@@ -15,7 +15,7 @@ class MainActivity : AppCompatActivity() {
 
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
-        val fragment = CalendarFragment()
+        val fragment = CalendarFragment.newInstance()
         fragmentTransaction.add(R.id.container, fragment)
         fragmentTransaction.commit()
 

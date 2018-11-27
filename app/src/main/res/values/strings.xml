@@ -6,4 +6,12 @@
     <string name="dummy">Dummy</string>
     <string name="prev_week">Previous</string>
     <string name="next_week">Next</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="create">CREATE</string>
+    <string name="cancel">CANCEL</string>
+    <string name="event_enter_title">Enter title</string>
+    <string name="event_enter_note">Enter event note</string>
+    <string name="event_duration">Event duration</string>
 </resources>

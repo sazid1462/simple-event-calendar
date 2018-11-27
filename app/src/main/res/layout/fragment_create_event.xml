@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/dialog_content_padding"
+    android:paddingRight="@dimen/dialog_content_padding"
+    tools:context=".CreateEventFragment">
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:hint="@string/event_enter_title"
+        android:textSize="@dimen/evnt_title_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <androidx.appcompat.widget.AppCompatEditText
+        android:hint="@string/event_enter_note"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</androidx.appcompat.widget.LinearLayoutCompat>

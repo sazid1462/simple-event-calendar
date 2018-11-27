@@ -30,9 +30,9 @@ class CalendarGridCellAdapter (private val context: Context, private val dateLis
     @SuppressLint("SetTextI18n")
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val cellView: View
-        val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         if (position == 0) {
             if (convertView == null) {
+                val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
                 cellView = inflater.inflate(R.layout.date_cell, parent, false)
                 cellView.layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, 185)
             } else {
@@ -43,6 +43,7 @@ class CalendarGridCellAdapter (private val context: Context, private val dateLis
             return cellView
         }
         if (convertView == null) {
+            val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             // if it's not recycled, initialize some attributes
             cellView = inflater.inflate(R.layout.date_cell, parent, false)
             cellView.layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, 185)

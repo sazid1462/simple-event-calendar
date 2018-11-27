@@ -11,6 +11,7 @@ import android.widget.GridView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import com.google.android.material.button.MaterialButton
 import java.util.*
 import kotlin.math.abs
@@ -21,14 +22,9 @@ import kotlin.math.abs
  */
 class CalendarFragment: Fragment() {
 
-    private var rootView: View? = null
-    private val cal = GregorianCalendar.getInstance()
     private val TODAY_DAY = cal.get(GregorianCalendar.DAY_OF_MONTH)
     private val TODAY_MONTH = cal.get(GregorianCalendar.MONTH)
     private val TODAY_YEAR = cal.get(GregorianCalendar.YEAR)
-//    private var dayDistance = 0
-    private var dateList: ArrayList<Pair<Int, Boolean>> = ArrayList(7)
-    private var monthViewerText: String = "${mMonths[cal.get(GregorianCalendar.MONTH)]} ${cal.get(GregorianCalendar.YEAR)}"
 
     /** Called when the activity is first created. */
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,6 +50,12 @@ class CalendarFragment: Fragment() {
             dateList.add(Pair(x, isToday))
             cal.add(GregorianCalendar.DAY_OF_MONTH, 1)
         }
+    }
+
+    private fun showCreateEventDialog() {
+        val newFragment = CreateEventFragment()
+        newFragment.setTargetFragment(this, targetRequestCode)
+        newFragment.show(activity?.supportFragmentManager, "createEvent")
     }
 
     @SuppressLint("SetTextI18n")
@@ -82,6 +84,7 @@ class CalendarFragment: Fragment() {
             eventGridview.onItemClickListener =
                     OnItemClickListener { parent, v, position, id ->
                         Toast.makeText(rootView.context, "$position", Toast.LENGTH_SHORT).show()
+                        showCreateEventDialog()
                     }
 
             val nextWeek: MaterialButton = rootView.findViewById(R.id.next_button)
@@ -108,5 +111,22 @@ class CalendarFragment: Fragment() {
     override fun onDestroy() {
         Log.d(tag, "Destroying View …")
         super.onDestroy()
+    }
+
+    companion object {
+        private val cal = GregorianCalendar.getInstance()
+        private var dateList: ArrayList<Pair<Int, Boolean>> = ArrayList(7)
+        private var monthViewerText: String = "${mMonths[cal.get(GregorianCalendar.MONTH)]} ${cal.get(GregorianCalendar.YEAR)}"
+
+        /**
+         * Returns a new instance of this fragment for the given section
+         * number.
+         */
+        fun newInstance(): CalendarFragment {
+            val fragment = CalendarFragment()
+            val args = Bundle()
+            fragment.arguments = args
+            return fragment
+        }
     }
 }
