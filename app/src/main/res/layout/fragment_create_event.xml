@@ -10,7 +10,7 @@
 
     <androidx.appcompat.widget.AppCompatEditText
         android:hint="@string/event_enter_title"
-        android:textSize="@dimen/evnt_title_text"
+        style="@style/event_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
     <androidx.appcompat.widget.AppCompatEditText

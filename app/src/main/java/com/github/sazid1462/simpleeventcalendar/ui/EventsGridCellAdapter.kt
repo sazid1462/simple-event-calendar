@@ -34,17 +34,20 @@ class EventsGridCellAdapter (private val context: Context, private val dateList:
             val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             // if it's not recycled, initialize some attributes
             cellView = inflater.inflate(R.layout.events_cell, parent, false)
-            cellView.layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, 120)
+            cellView.layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, 150)
 
             cellView.setPadding(1, 1, 1, 1)
         } else {
             cellView = convertView
         }
-
         val textViewEvent = cellView.findViewById(R.id.event_cell_text) as TextView
-        textViewEvent.text = (position - position/NO_OF_DAYS).toString()
-        cellView.background = context.getDrawable(R.drawable.rect_border)
-
+        if (position < NO_OF_DAYS) {
+            textViewEvent.background = context.getDrawable(android.R.drawable.ic_input_add)
+        } else {
+            textViewEvent.text = (position - position / NO_OF_DAYS).toString()
+            textViewEvent.background = null
+//            cellView.background = context.getDrawable(R.drawable.rect_border)
+        }
         return cellView
     }
 

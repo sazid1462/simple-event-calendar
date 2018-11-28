@@ -10,9 +10,11 @@ import java.util.*
 import android.view.LayoutInflater
 import android.widget.TextView
 import com.github.sazid1462.simpleeventcalendar.R
+import com.google.android.material.button.MaterialButton
 import kotlin.collections.ArrayList
 
-class CalendarGridCellAdapter (private val context: Context, private var dateList: ArrayList<Pair<Int, Boolean>>) : BaseAdapter() {
+class CalendarGridCellAdapter(private val context: Context, private var dateList: ArrayList<Pair<Int, Boolean>>) :
+    BaseAdapter() {
 
     // First, let's obtain an instance of GregorianCalendar.
     private var cal = GregorianCalendar.getInstance()
@@ -34,18 +36,6 @@ class CalendarGridCellAdapter (private val context: Context, private var dateLis
     @SuppressLint("SetTextI18n")
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val cellView: View
-//        if (position == 0) {
-//            if (convertView == null) {
-//                val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-//                cellView = inflater.inflate(R.layout.date_cell, parent, false)
-//                cellView.layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, 185)
-//            } else {
-//                cellView = convertView
-//            }
-//            val textViewDate = cellView.findViewById(R.id.date_cell_text) as TextView
-//            textViewDate.text = "24H"
-//            return cellView
-//        }
         if (convertView == null) {
             val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             // if it's not recycled, initialize some attributes

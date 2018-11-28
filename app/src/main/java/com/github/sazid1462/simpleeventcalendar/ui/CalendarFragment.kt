@@ -50,7 +50,7 @@ class CalendarFragment : Fragment() {
         }
     }
 
-    private fun showCreateEventDialog() {
+    fun showCreateEventDialog() {
         val newFragment = CreateEventFragment()
         newFragment.setTargetFragment(this, targetRequestCode)
         newFragment.show(activity?.supportFragmentManager, "createEvent")
@@ -122,7 +122,7 @@ class CalendarFragment : Fragment() {
         eventGridview.onItemClickListener =
                 OnItemClickListener { parent, v, position, id ->
                     Toast.makeText(rootView.context, "$position", Toast.LENGTH_SHORT).show()
-                    showCreateEventDialog()
+                    if (position < NO_OF_DAYS) showCreateEventDialog()
                 }
         return eventGridview
     }

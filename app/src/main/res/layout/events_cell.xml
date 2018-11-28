@@ -11,6 +11,5 @@
         android:id="@+id/event_cell_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/dummy"
         android:textSize="12sp" />
 </androidx.appcompat.widget.LinearLayoutCompat>
