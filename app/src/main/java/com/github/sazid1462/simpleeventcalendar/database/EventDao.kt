@@ -14,16 +14,16 @@ interface EventDao {
     fun loadAllEvents(): LiveData<List<Event>>
 
     @Query("SELECT * FROM event WHERE event_id IN (:eventIds)")
-    fun loadAllByIds(eventIds: IntArray): MediatorLiveData<List<Event>>
+    fun loadAllByIds(eventIds: IntArray): LiveData<List<Event>>
 
     @Query("SELECT * FROM event WHERE event_schedule BETWEEN :startDate AND :endDate")
-    fun loadAllByScheduleRange(startDate: Date, endDate: Date): MediatorLiveData<List<Event>>
+    fun loadAllByScheduleRange(startDate: Long, endDate: Long): LiveData<List<Event>>
 
     @Query("SELECT * FROM event WHERE event_id = :eventId")
-    fun loadEvent(eventId: Int): MediatorLiveData<Event>
+    fun loadEvent(eventId: Int): LiveData<Event>
 
     @Query("SELECT * FROM event WHERE event_title LIKE :title LIMIT 1")
-    fun findByTitle(title: String): MediatorLiveData<Event>
+    fun findByTitle(title: String): LiveData<Event>
 
     @Insert
     fun insertAll(vararg events: Event)

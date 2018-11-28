@@ -31,7 +31,7 @@ class EventRepository(eventRoomDatabase: EventRoomDatabase) {
     }
 
     fun insert(event: Event) {
-        return mDatabase.eventDao().insert(event)
+        insertAsyncTask(mDatabase.eventDao()).execute(event)
     }
 
     fun loadEvent(eventId: Int): LiveData<Event> {

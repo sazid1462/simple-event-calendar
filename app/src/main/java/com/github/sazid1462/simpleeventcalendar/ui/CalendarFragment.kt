@@ -11,7 +11,9 @@ import android.widget.GridView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProviders
 import com.github.sazid1462.simpleeventcalendar.R
+import com.github.sazid1462.simpleeventcalendar.viewmodel.EventViewModel
 import com.google.android.material.button.MaterialButton
 import java.util.*
 import kotlin.math.abs
@@ -112,7 +114,8 @@ class CalendarFragment : Fragment() {
         // GridView for showing the events
         val eventGridview: GridView = rootView.findViewById(R.id.events)
         eventGridview.adapter = EventsGridCellAdapter(
-            rootView.context,
+            this.context!!,
+            this,
             dateList
         )
 

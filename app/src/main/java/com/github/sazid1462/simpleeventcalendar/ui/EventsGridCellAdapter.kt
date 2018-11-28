@@ -8,17 +8,31 @@ import android.widget.BaseAdapter
 import java.util.*
 import android.view.LayoutInflater
 import android.widget.TextView
+import androidx.annotation.Nullable
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import com.github.sazid1462.simpleeventcalendar.R
 import com.github.sazid1462.simpleeventcalendar.database.Event
+import com.github.sazid1462.simpleeventcalendar.viewmodel.EventViewModel
+import androidx.lifecycle.ViewModelProviders
 
-class EventsGridCellAdapter (private val context: Context, private var dateList: ArrayList<Pair<DateTimeObject, Boolean>>) : BaseAdapter() {
+
+
+class EventsGridCellAdapter (private val context: Context, hostFragment: Fragment, private var dateList: ArrayList<Pair<DateTimeObject, Boolean>>) : BaseAdapter() {
 
     // First, let's obtain an instance of GregorianCalendar.
     private var cal = GregorianCalendar.getInstance()
     private var mEvents: List<Event> = ArrayList()
+    private var mEventViewModel: EventViewModel = ViewModelProviders.of(hostFragment).get(EventViewModel::class.java)
 
     init {
-        // TODO update mEvents
+        mEventViewModel.allEvents.observe(hostFragment,
+            Observer<List<Event>> { events ->
+                // Update the cached copy of the words in the adapter.
+                mEvents = events
+                notifyDataSetInvalidated()
+            })
     }
 
     override fun getCount(): Int {

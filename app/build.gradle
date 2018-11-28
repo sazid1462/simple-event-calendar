@@ -4,6 +4,8 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
+apply plugin: 'kotlin-kapt'
+
 android {
     compileSdkVersion 28
     defaultConfig {
@@ -40,16 +42,16 @@ dependencies {
     // ViewModel and LiveData
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
     // alternatively - just ViewModel
-    implementation "androidx.lifecycle:lifecycle-viewmodel:$lifecycle_version" // use -ktx for Kotlin
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version" // use -ktx for Kotlin
     // alternatively - just LiveData
     implementation "androidx.lifecycle:lifecycle-livedata:$lifecycle_version"
-    annotationProcessor "androidx.lifecycle:lifecycle-compiler:$lifecycle_version" // use kapt for Kotlin
+    kapt "androidx.lifecycle:lifecycle-compiler:$lifecycle_version" // use kapt for Kotlin
     // optional - ReactiveStreams support for LiveData
-    implementation "androidx.lifecycle:lifecycle-reactivestreams:$lifecycle_version" // use -ktx for Kotlin
+    implementation "androidx.lifecycle:lifecycle-reactivestreams-ktx:$lifecycle_version" // use -ktx for Kotlin
 
     def room_version = "2.1.0-alpha02"
     implementation "androidx.room:room-runtime:$room_version"
-    annotationProcessor "androidx.room:room-compiler:$room_version" // use kapt for Kotlin
+    kapt "androidx.room:room-compiler:$room_version" // use kapt for Kotlin
     // optional - RxJava support for Room
     implementation "androidx.room:room-rxjava2:$room_version"
     // optional - Guava support for Room, including Optional and ListenableFuture
