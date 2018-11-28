@@ -16,15 +16,15 @@ class EventsGridCellAdapter (private val context: Context, private val dateList:
     private var cal = GregorianCalendar.getInstance()
 
     override fun getCount(): Int {
-        return 24 * 8
+        return 10 * NO_OF_DAYS
     }
 
     override fun getItem(position: Int): Any? {
-        return (position - position/8).toString()
+        return (position - position/NO_OF_DAYS).toString()
     }
 
     override fun getItemId(position: Int): Long {
-        return (position - position/8).toLong()
+        return (position - position/NO_OF_DAYS).toLong()
     }
 
     // create a new ImageView for each item referenced by the Adapter
@@ -41,18 +41,9 @@ class EventsGridCellAdapter (private val context: Context, private val dateList:
             cellView = convertView
         }
 
-        if (position % 8 == 0) {
-            val textViewEvent = cellView.findViewById(R.id.event_cell_text) as TextView
-            val tim = (position/8)
-            val txt: String
-            txt = "$tim to ${tim+1}"
-            textViewEvent.text = txt
-            cellView.background = context.getDrawable(R.color.lightgray02)
-        } else {
-            val textViewEvent = cellView.findViewById(R.id.event_cell_text) as TextView
-            textViewEvent.text = (position - position/8).toString()
-            cellView.background = context.getDrawable(R.drawable.rect_border)
-        }
+        val textViewEvent = cellView.findViewById(R.id.event_cell_text) as TextView
+        textViewEvent.text = (position - position/NO_OF_DAYS).toString()
+        cellView.background = context.getDrawable(R.drawable.rect_border)
 
         return cellView
     }
