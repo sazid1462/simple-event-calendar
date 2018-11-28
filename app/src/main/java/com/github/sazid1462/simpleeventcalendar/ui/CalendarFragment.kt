@@ -41,17 +41,16 @@ class CalendarFragment : Fragment() {
         monthViewerText = "${mMonths[cal.get(GregorianCalendar.MONTH)]} ${cal.get(GregorianCalendar.YEAR)}"
         Log.d("CalendarFragment", cal.time.toString())
         for (i in 0..6) {
-            val x = cal.get(GregorianCalendar.DAY_OF_MONTH)
-            val isToday = cal.get(GregorianCalendar.DAY_OF_MONTH) == TODAY_DAY &&
-                    cal.get(GregorianCalendar.MONTH) == TODAY_MONTH && cal.get(GregorianCalendar.YEAR) == TODAY_YEAR
+            val x = DateTimeObject(cal.time)
+            val isToday = x.day == TODAY_DAY && x.month == TODAY_MONTH && x.year == TODAY_YEAR
 
             dateList.add(Pair(x, isToday))
             cal.add(GregorianCalendar.DAY_OF_MONTH, 1)
         }
     }
 
-    fun showCreateEventDialog() {
-        val newFragment = CreateEventFragment()
+    fun showCreateEventDialog(pair: Pair<DateTimeObject, Boolean>?) {
+        val newFragment = CreateEventFragment.newInstance(pair?.first)
         newFragment.setTargetFragment(this, targetRequestCode)
         newFragment.show(activity?.supportFragmentManager, "createEvent")
     }
@@ -83,30 +82,28 @@ class CalendarFragment : Fragment() {
         val nextWeek: MaterialButton = rootView.findViewById(R.id.next_button)
         nextWeek.setOnClickListener { v ->
             activity?.runOnUiThread {
-                AsyncRunner({
-                    prepareCurrentWeek(0)
-                }, {
-                    monthViewer.text =
-                            monthViewerText
-                    (dateGridview.adapter as CalendarGridCellAdapter).setDateList(
-                        dateList
-                    )
-                }).execute()
+                AsyncRunner(
+                    {
+                        prepareCurrentWeek(0)
+                    }, {
+                        monthViewer.text = monthViewerText
+                        (dateGridview.adapter as CalendarGridCellAdapter).setDateList(dateList)
+                        (eventsGridview.adapter as EventsGridCellAdapter).setDateList(dateList)
+                    }).execute()
             }
         }
 
         val prevWeek: MaterialButton = rootView.findViewById(R.id.prev_button)
         prevWeek.setOnClickListener { v ->
             activity?.runOnUiThread {
-                AsyncRunner({
-                    prepareCurrentWeek(-14)
-                }, {
-                    monthViewer.text =
-                            monthViewerText
-                    (dateGridview.adapter as CalendarGridCellAdapter).setDateList(
-                        dateList
-                    )
-                }).execute()
+                AsyncRunner(
+                    {
+                        prepareCurrentWeek(-14)
+                    }, {
+                        monthViewer.text = monthViewerText
+                        (dateGridview.adapter as CalendarGridCellAdapter).setDateList(dateList)
+                        (eventsGridview.adapter as EventsGridCellAdapter).setDateList(dateList)
+                    }).execute()
             }
         }
     }
@@ -122,7 +119,7 @@ class CalendarFragment : Fragment() {
         eventGridview.onItemClickListener =
                 OnItemClickListener { parent, v, position, id ->
                     Toast.makeText(rootView.context, "$position", Toast.LENGTH_SHORT).show()
-                    if (position < NO_OF_DAYS) showCreateEventDialog()
+                    if (position < NO_OF_DAYS) showCreateEventDialog(dateList[position])
                 }
         return eventGridview
     }
@@ -149,7 +146,7 @@ class CalendarFragment : Fragment() {
 
     companion object {
         private val cal = GregorianCalendar.getInstance()
-        private var dateList: ArrayList<Pair<Int, Boolean>> = ArrayList(7)
+        private var dateList: ArrayList<Pair<DateTimeObject, Boolean>> = ArrayList(7)
         private var monthViewerText: String =
             "${mMonths[cal.get(GregorianCalendar.MONTH)]} ${cal.get(GregorianCalendar.YEAR)}"
 

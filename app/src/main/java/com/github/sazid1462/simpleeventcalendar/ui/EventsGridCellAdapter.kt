@@ -9,22 +9,34 @@ import java.util.*
 import android.view.LayoutInflater
 import android.widget.TextView
 import com.github.sazid1462.simpleeventcalendar.R
+import com.github.sazid1462.simpleeventcalendar.database.Event
 
-class EventsGridCellAdapter (private val context: Context, private val dateList: ArrayList<Pair<Int, Boolean>>) : BaseAdapter() {
+class EventsGridCellAdapter (private val context: Context, private var dateList: ArrayList<Pair<DateTimeObject, Boolean>>) : BaseAdapter() {
 
     // First, let's obtain an instance of GregorianCalendar.
     private var cal = GregorianCalendar.getInstance()
+    private var mEvents: List<Event> = ArrayList()
+
+    init {
+        // TODO update mEvents
+    }
 
     override fun getCount(): Int {
-        return 10 * NO_OF_DAYS
+        return mEvents.size + NO_OF_DAYS
     }
 
     override fun getItem(position: Int): Any? {
-        return (position - position/NO_OF_DAYS).toString()
+        return mEvents[(position - position/NO_OF_DAYS)].eventTitle
     }
 
     override fun getItemId(position: Int): Long {
         return (position - position/NO_OF_DAYS).toLong()
+    }
+
+    fun setDateList(dateList: ArrayList<Pair<DateTimeObject, Boolean>>) {
+        this.dateList = dateList
+        // TODO update mEvents
+        notifyDataSetInvalidated()
     }
 
     // create a new ImageView for each item referenced by the Adapter

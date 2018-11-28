@@ -13,7 +13,7 @@ import com.github.sazid1462.simpleeventcalendar.R
 import com.google.android.material.button.MaterialButton
 import kotlin.collections.ArrayList
 
-class CalendarGridCellAdapter(private val context: Context, private var dateList: ArrayList<Pair<Int, Boolean>>) :
+class CalendarGridCellAdapter(private val context: Context, private var dateList: ArrayList<Pair<DateTimeObject, Boolean>>) :
     BaseAdapter() {
 
     // First, let's obtain an instance of GregorianCalendar.
@@ -23,8 +23,8 @@ class CalendarGridCellAdapter(private val context: Context, private var dateList
         return NO_OF_DAYS
     }
 
-    fun setDateList(dateList: ArrayList<Pair<Int, Boolean>>) {
-        this.dateList.addAll(dateList)
+    fun setDateList(dateList: ArrayList<Pair<DateTimeObject, Boolean>>) {
+        this.dateList = dateList
         notifyDataSetInvalidated()
     }
 
@@ -51,7 +51,7 @@ class CalendarGridCellAdapter(private val context: Context, private var dateList
         textViewDay.text = mDaysOfWeek[(NO_OF_DAYS + (cal.firstDayOfWeek + position - 1)) % NO_OF_DAYS]
 
         val textViewDate = cellView.findViewById(R.id.date_cell_text) as TextView
-        textViewDate.text = dateList[position].first.toString()
+        textViewDate.text = dateList[position].first.day.toString()
 
         if (dateList[position].second) {
             textViewDate.setTextColor(context.getColor(R.color.white))

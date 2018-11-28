@@ -3,7 +3,6 @@ package com.github.sazid1462.simpleeventcalendar.ui
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.github.sazid1462.simpleeventcalendar.R
-import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 
 
@@ -21,7 +20,7 @@ class MainActivity : AppCompatActivity() {
         fragmentTransaction.commit()
 
         fab.setOnClickListener { view ->
-            fragment.showCreateEventDialog()
+            fragment.showCreateEventDialog(null)
         }
     }
 

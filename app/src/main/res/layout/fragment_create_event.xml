@@ -9,13 +9,45 @@
     tools:context=".ui.CreateEventFragment">
 
     <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/eventTitle"
         android:hint="@string/event_enter_title"
         style="@style/event_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
     <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/eventNote"
         android:hint="@string/event_enter_note"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        style="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="10dp"
+        android:labelFor="@id/schedulePicker"
+        android:text="@string/event_schedule"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/schedulePicker"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <DatePicker
+            android:id="@+id/datePicker"
+            android:calendarViewShown="false"
+            android:datePickerMode="spinner"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TimePicker
+            android:id="@+id/timePicker"
+            android:layout_marginStart="-10dp"
+            android:timePickerMode="spinner"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
 </androidx.appcompat.widget.LinearLayoutCompat>
