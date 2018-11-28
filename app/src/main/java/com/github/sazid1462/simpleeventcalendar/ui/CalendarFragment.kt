@@ -1,4 +1,4 @@
-package com.github.sazid1462.simpleeventcalendar
+package com.github.sazid1462.simpleeventcalendar.ui
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -11,6 +11,7 @@ import android.widget.GridView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.github.sazid1462.simpleeventcalendar.R
 import com.google.android.material.button.MaterialButton
 import java.util.*
 import kotlin.math.abs
@@ -85,8 +86,11 @@ class CalendarFragment : Fragment() {
                 AsyncRunner({
                     prepareCurrentWeek(0)
                 }, {
-                    monthViewer.text = monthViewerText
-                    (dateGridview.adapter as CalendarGridCellAdapter).setDateList(dateList)
+                    monthViewer.text =
+                            monthViewerText
+                    (dateGridview.adapter as CalendarGridCellAdapter).setDateList(
+                        dateList
+                    )
                 }).execute()
             }
         }
@@ -97,8 +101,11 @@ class CalendarFragment : Fragment() {
                 AsyncRunner({
                     prepareCurrentWeek(-14)
                 }, {
-                    monthViewer.text = monthViewerText
-                    (dateGridview.adapter as CalendarGridCellAdapter).setDateList(dateList)
+                    monthViewer.text =
+                            monthViewerText
+                    (dateGridview.adapter as CalendarGridCellAdapter).setDateList(
+                        dateList
+                    )
                 }).execute()
             }
         }
@@ -107,7 +114,10 @@ class CalendarFragment : Fragment() {
     private fun registerEventsGridView(rootView: View): GridView {
         // GridView for showing the events
         val eventGridview: GridView = rootView.findViewById(R.id.events)
-        eventGridview.adapter = EventsGridCellAdapter(rootView.context, dateList)
+        eventGridview.adapter = EventsGridCellAdapter(
+            rootView.context,
+            dateList
+        )
 
         eventGridview.onItemClickListener =
                 OnItemClickListener { parent, v, position, id ->
@@ -120,7 +130,10 @@ class CalendarFragment : Fragment() {
     private fun registerDateGridView(rootView: View): GridView {
         // GridView for showing the dates
         val dateGridview: GridView = rootView.findViewById(R.id.calendar)
-        dateGridview.adapter = CalendarGridCellAdapter(rootView.context, dateList)
+        dateGridview.adapter = CalendarGridCellAdapter(
+            rootView.context,
+            dateList
+        )
 
         dateGridview.onItemClickListener =
                 OnItemClickListener { parent, v, position, id ->

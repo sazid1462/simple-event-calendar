@@ -1,4 +1,4 @@
-package com.github.sazid1462.simpleeventcalendar
+package com.github.sazid1462.simpleeventcalendar.ui
 
 val NO_OF_DAYS: Int = 7
 

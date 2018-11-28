@@ -1,7 +1,6 @@
-package com.github.sazid1462.simpleeventcalendar
+package com.github.sazid1462.simpleeventcalendar.ui
 
 import android.content.Context
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
@@ -9,6 +8,7 @@ import android.widget.BaseAdapter
 import java.util.*
 import android.view.LayoutInflater
 import android.widget.TextView
+import com.github.sazid1462.simpleeventcalendar.R
 
 class EventsGridCellAdapter (private val context: Context, private val dateList: ArrayList<Pair<Int, Boolean>>) : BaseAdapter() {
 

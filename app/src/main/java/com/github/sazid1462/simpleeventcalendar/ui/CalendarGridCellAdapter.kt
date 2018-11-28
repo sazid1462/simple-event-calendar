@@ -1,9 +1,7 @@
-package com.github.sazid1462.simpleeventcalendar
+package com.github.sazid1462.simpleeventcalendar.ui
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
@@ -11,6 +9,7 @@ import android.widget.BaseAdapter
 import java.util.*
 import android.view.LayoutInflater
 import android.widget.TextView
+import com.github.sazid1462.simpleeventcalendar.R
 import kotlin.collections.ArrayList
 
 class CalendarGridCellAdapter (private val context: Context, private var dateList: ArrayList<Pair<Int, Boolean>>) : BaseAdapter() {

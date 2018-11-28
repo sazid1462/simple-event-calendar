@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:paddingLeft="@dimen/dialog_content_padding"
     android:paddingRight="@dimen/dialog_content_padding"
-    tools:context=".CreateEventFragment">
+    tools:context=".ui.CreateEventFragment">
 
     <androidx.appcompat.widget.AppCompatEditText
         android:hint="@string/event_enter_title"

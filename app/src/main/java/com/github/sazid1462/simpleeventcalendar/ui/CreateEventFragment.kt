@@ -1,17 +1,13 @@
-package com.github.sazid1462.simpleeventcalendar
+package com.github.sazid1462.simpleeventcalendar.ui
 
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
-import android.net.Uri
 import android.os.Bundle
-import android.content.DialogInterface
 import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
-import androidx.core.app.BundleCompat
 import androidx.fragment.app.DialogFragment
+import com.github.sazid1462.simpleeventcalendar.R
 import java.util.*
 
 /**
@@ -35,11 +31,13 @@ class CreateEventFragment : DialogFragment() {
             val inflater = context?.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             builder.setView(inflater.inflate(R.layout.fragment_create_event, null))
                 .setTitle("Add Event")
-                .setPositiveButton(R.string.create
+                .setPositiveButton(
+                    R.string.create
                 ) { dialog, id ->
                     // FIRE ZE MISSILES! TODO
                 }
-                .setNegativeButton(R.string.cancel
+                .setNegativeButton(
+                    R.string.cancel
                 ) { dialog, id ->
                     // User cancelled the dialog TODO
                 }

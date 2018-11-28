@@ -1,4 +1,4 @@
-package com.github.sazid1462.database
+package com.github.sazid1462.simpleeventcalendar.database
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
