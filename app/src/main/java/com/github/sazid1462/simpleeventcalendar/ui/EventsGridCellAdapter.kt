@@ -1,6 +1,7 @@
 package com.github.sazid1462.simpleeventcalendar.ui
 
 import android.content.Context
+import android.text.format.DateUtils
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
@@ -17,14 +18,18 @@ import com.github.sazid1462.simpleeventcalendar.R
 import com.github.sazid1462.simpleeventcalendar.database.Event
 import com.github.sazid1462.simpleeventcalendar.viewmodel.EventViewModel
 import androidx.lifecycle.ViewModelProviders
-
+import java.sql.Date
+import java.sql.Timestamp
+import java.util.function.Consumer
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 
 class EventsGridCellAdapter (private val context: Context, hostFragment: Fragment, private var dateList: ArrayList<Pair<DateTimeObject, Boolean>>) : BaseAdapter() {
 
     // First, let's obtain an instance of GregorianCalendar.
     private var cal = GregorianCalendar.getInstance()
-    private var mEvents: List<Event> = ArrayList()
+    private var mEvents: MutableList<Event?> = ArrayList()
     private var mEventViewModel: EventViewModel = ViewModelProviders.of(hostFragment,
         EventViewModel.EventViewModelFactory(hostFragment.activity!!.application,
             dateList[0].first.floorDateObject().time,
@@ -35,8 +40,21 @@ class EventsGridCellAdapter (private val context: Context, hostFragment: Fragmen
         mEventViewModel.events.observe(hostFragment,
             Observer<List<Event>> { events ->
                 // Update the cached copy of the words in the adapter.
+                mEvents = ArrayList()
+                val cnt: Array<Int> = arrayOf(0, 0, 0, 0, 0, 0, 0)
                 if (events != null) {
-                    mEvents = events
+                    events.forEach { event ->
+                        run {
+                            val schedule = DateTimeObject.new(Date(event.eventSchedule!!))
+                            val idx = (schedule.day - dateList[0].first.day) + (cnt[schedule.day - dateList[0].first.day] * NO_OF_DAYS)
+                            if (idx >= mEvents.size) {
+                                val shortage = (idx - mEvents.size + 1)
+                                mEvents.addAll(arrayOfNulls(((shortage+7)/7)*7))
+                            }
+                            mEvents[idx] = event
+                            cnt[schedule.day - dateList[0].first.day] ++
+                        }
+                    }
                     notifyDataSetInvalidated()
                 }
             })
@@ -47,7 +65,7 @@ class EventsGridCellAdapter (private val context: Context, hostFragment: Fragmen
     }
 
     override fun getItem(position: Int): Any? {
-        return mEvents[(position - NO_OF_DAYS)].eventTitle
+        return mEvents[(position - NO_OF_DAYS)]?.eventTitle
     }
 
     override fun getItemId(position: Int): Long {
@@ -79,14 +97,19 @@ class EventsGridCellAdapter (private val context: Context, hostFragment: Fragmen
         val textViewEvent = cellView.findViewById(R.id.event_cell_text) as TextView
         if (position < NO_OF_DAYS) {
             textViewEvent.background = context.getDrawable(android.R.drawable.ic_input_add)
+            textViewEvent.text = ""
         } else {
-            Log.d("CellAdapter getView",
-                "position $position \nId ${mEvents[position- NO_OF_DAYS].eventId}" +
-                        "\nTitle ${mEvents[position- NO_OF_DAYS].eventTitle}" +
-                        "\nNote ${mEvents[position- NO_OF_DAYS].eventNote}" +
-                        "\nSchedule ${mEvents[position- NO_OF_DAYS].eventSchedule}" +
-                        "\nrange ${dateList[0].first.floorDateObject().time} ${dateList[NO_OF_DAYS-1].first.ceilDateObject().time}")
-            textViewEvent.text = mEvents[(position - NO_OF_DAYS)].eventTitle
+            if (mEvents[position- NO_OF_DAYS] != null) {
+                Log.d("CellAdapter getView",
+                    "position $position \nId ${mEvents[position- NO_OF_DAYS]?.eventId}" +
+                            "\nTitle ${mEvents[position- NO_OF_DAYS]?.eventTitle}" +
+                            "\nNote ${mEvents[position- NO_OF_DAYS]?.eventNote}" +
+                            "\nSchedule ${mEvents[position- NO_OF_DAYS]?.eventSchedule}" +
+                            "\nrange ${dateList[0].first.floorDateObject().time} ${dateList[NO_OF_DAYS-1].first.ceilDateObject().time}")
+                textViewEvent.text = mEvents[(position - NO_OF_DAYS)]?.eventTitle
+            } else {
+                textViewEvent.text = ""
+            }
             textViewEvent.background = null
 //            cellView.background = context.getDrawable(R.drawable.rect_border)
         }
