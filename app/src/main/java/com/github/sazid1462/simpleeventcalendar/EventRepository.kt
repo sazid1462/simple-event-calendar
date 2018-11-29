@@ -1,44 +1,43 @@
 package com.github.sazid1462.simpleeventcalendar
 
 import androidx.lifecycle.LiveData
-import android.app.Application
 import android.os.AsyncTask
+import android.util.Log
+import androidx.lifecycle.MutableLiveData
 import com.github.sazid1462.simpleeventcalendar.database.Event
 import com.github.sazid1462.simpleeventcalendar.database.EventDao
 import com.github.sazid1462.simpleeventcalendar.database.EventRoomDatabase
-import androidx.lifecycle.MediatorLiveData
 
 
 class EventRepository(eventRoomDatabase: EventRoomDatabase) {
     private var mDatabase: EventRoomDatabase = eventRoomDatabase
-    private var mObservableEvents: MediatorLiveData<List<Event>> = MediatorLiveData()
 
     init {
-        mObservableEvents.addSource(
-            mDatabase.eventDao().loadAllEvents()
-        ) { events ->
-            if (mDatabase.getDatabaseCreated().getValue() != null) {
-                mObservableEvents.postValue(events)
-            }
-        }
+//        mEvents = mDatabase.eventDao().loadAllEvents()
     }
 
     /**
      * Get the list of events from the database and get notified when the data changes.
      */
-    fun getEvents(): LiveData<List<Event>> {
-        return mObservableEvents
+    fun getAllEvents(): LiveData<List<Event>> {
+        return mDatabase.eventDao().loadAllEvents()
+    }
+
+    fun getEventsBySchedule(startDate: Long, endDate: Long): LiveData<List<Event>> {
+        val newEvents = mDatabase.eventDao().loadAllByScheduleRange(startDate, endDate)
+        Log.d("EventRepository get", "start $startDate end $endDate items ${newEvents}")
+        return newEvents
     }
 
     fun insert(event: Event) {
-        insertAsyncTask(mDatabase.eventDao()).execute(event)
+        InsertAsyncTask(mDatabase.eventDao()).execute(event)
     }
 
     fun loadEvent(eventId: Int): LiveData<Event> {
         return mDatabase.eventDao().loadEvent(eventId)
     }
 
-    private class insertAsyncTask internal constructor(private val mAsyncTaskDao: EventDao?) :
+    private class InsertAsyncTask internal constructor(private val mAsyncTaskDao: EventDao?) :
         AsyncTask<Event, Void, Void>() {
 
         override fun doInBackground(vararg params: Event): Void? {

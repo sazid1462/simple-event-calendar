@@ -2,7 +2,7 @@ package com.github.sazid1462.simpleeventcalendar.ui
 
 import java.util.*
 
-class DateTimeObject() {
+class DateTimeObject {
     var year: Int = 2018
     var month: Int = 1
     var day: Int = 1
@@ -12,7 +12,7 @@ class DateTimeObject() {
 
     init {
         val cal = GregorianCalendar()
-        cal.time = date
+        this.date = cal.time
         year = cal.get(GregorianCalendar.YEAR)
         month = cal.get(GregorianCalendar.MONTH)
         day = cal.get(GregorianCalendar.DAY_OF_MONTH)
@@ -20,47 +20,43 @@ class DateTimeObject() {
         minute = cal.get(GregorianCalendar.MINUTE)
     }
 
-    constructor(date: Date) : this() {
+    fun floorDateObject(): Date {
         val cal = GregorianCalendar()
-        cal.time = date
-        this.date = date
-        year = cal.get(GregorianCalendar.YEAR)
-        month = cal.get(GregorianCalendar.MONTH)
-        day = cal.get(GregorianCalendar.DAY_OF_MONTH)
-        hour = cal.get(GregorianCalendar.HOUR)
-        minute = cal.get(GregorianCalendar.MINUTE)
+        cal.set(year, month, day, 0, 0, 0)
+        return cal.time
     }
 
-    constructor(year: Int, month: Int, day: Int, hour: Int, minute: Int) : this() {
-        this.year = year
-        this.month = month
-        this.day = day
-        this.hour = hour
-        this.minute = minute
-        this.date = getDateObject(this)
+    fun ceilDateObject(): Date {
+        val cal = GregorianCalendar()
+        cal.set(year, month, day, 23, 59, 59)
+        return cal.time
     }
 
     companion object {
-        @JvmStatic
-        fun getDateObject(dto: DateTimeObject): Date {
+        fun new(date: Date) : DateTimeObject {
+            val obj = DateTimeObject()
             val cal = GregorianCalendar()
-            cal.set(GregorianCalendar.YEAR, dto.year)
-            cal.set(GregorianCalendar.MONTH, dto.month)
-            cal.set(GregorianCalendar.DAY_OF_MONTH, dto.day)
-            cal.set(GregorianCalendar.HOUR, dto.hour)
-            cal.set(GregorianCalendar.MINUTE, dto.minute)
-            return cal.time
+            cal.time = date
+            obj.date = date
+            obj.year = cal.get(GregorianCalendar.YEAR)
+            obj.month = cal.get(GregorianCalendar.MONTH)
+            obj.day = cal.get(GregorianCalendar.DAY_OF_MONTH)
+            obj.hour = cal.get(GregorianCalendar.HOUR)
+            obj.minute = cal.get(GregorianCalendar.MINUTE)
+            return obj
         }
 
-        @JvmStatic
-        fun getDateObject(year: Int, month: Int, day: Int, hour: Int, minute: Int): Date {
+        fun new(year: Int, month: Int, day: Int, hour: Int, minute: Int) : DateTimeObject {
+            val obj = DateTimeObject()
+            obj.year = year
+            obj.month = month
+            obj.day = day
+            obj.hour = hour
+            obj.minute = minute
             val cal = GregorianCalendar()
-            cal.set(GregorianCalendar.YEAR, year)
-            cal.set(GregorianCalendar.MONTH, month)
-            cal.set(GregorianCalendar.DAY_OF_MONTH, day)
-            cal.set(GregorianCalendar.HOUR, hour)
-            cal.set(GregorianCalendar.MINUTE, minute)
-            return cal.time
+            cal.set(year, month, day, hour, minute)
+            obj.date = cal.time
+            return obj
         }
     }
 }

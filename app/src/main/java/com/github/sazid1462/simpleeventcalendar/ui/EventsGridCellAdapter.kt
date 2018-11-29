@@ -1,6 +1,7 @@
 package com.github.sazid1462.simpleeventcalendar.ui
 
 import android.content.Context
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
@@ -24,14 +25,20 @@ class EventsGridCellAdapter (private val context: Context, hostFragment: Fragmen
     // First, let's obtain an instance of GregorianCalendar.
     private var cal = GregorianCalendar.getInstance()
     private var mEvents: List<Event> = ArrayList()
-    private var mEventViewModel: EventViewModel = ViewModelProviders.of(hostFragment).get(EventViewModel::class.java)
+    private var mEventViewModel: EventViewModel = ViewModelProviders.of(hostFragment,
+        EventViewModel.EventViewModelFactory(hostFragment.activity!!.application,
+            dateList[0].first.floorDateObject().time,
+            dateList[NO_OF_DAYS-1].first.ceilDateObject().time)).get(EventViewModel::class.java)
 
     init {
-        mEventViewModel.allEvents.observe(hostFragment,
+//        mEventViewModel.events.observe(hostFragment,
+        mEventViewModel.events.observe(hostFragment,
             Observer<List<Event>> { events ->
                 // Update the cached copy of the words in the adapter.
-                mEvents = events
-                notifyDataSetInvalidated()
+                if (events != null) {
+                    mEvents = events
+                    notifyDataSetInvalidated()
+                }
             })
     }
 
@@ -40,17 +47,20 @@ class EventsGridCellAdapter (private val context: Context, hostFragment: Fragmen
     }
 
     override fun getItem(position: Int): Any? {
-        return mEvents[(position - position/NO_OF_DAYS)].eventTitle
+        return mEvents[(position - NO_OF_DAYS)].eventTitle
     }
 
     override fun getItemId(position: Int): Long {
-        return (position - position/NO_OF_DAYS).toLong()
+        return (position - NO_OF_DAYS).toLong()
     }
 
     fun setDateList(dateList: ArrayList<Pair<DateTimeObject, Boolean>>) {
         this.dateList = dateList
+        Log.d("CellAdapter setDate", "start ${dateList[0].first.floorDateObject().time} end ${dateList[NO_OF_DAYS-1].first.ceilDateObject().time}")
         // TODO update mEvents
-        notifyDataSetInvalidated()
+        mEventViewModel.updateDataSet(dateList[0].first.floorDateObject().time,
+            dateList[NO_OF_DAYS-1].first.ceilDateObject().time)
+//        notifyDataSetInvalidated()
     }
 
     // create a new ImageView for each item referenced by the Adapter
@@ -70,7 +80,13 @@ class EventsGridCellAdapter (private val context: Context, hostFragment: Fragmen
         if (position < NO_OF_DAYS) {
             textViewEvent.background = context.getDrawable(android.R.drawable.ic_input_add)
         } else {
-            textViewEvent.text = (position - position / NO_OF_DAYS).toString()
+            Log.d("CellAdapter getView",
+                "position $position \nId ${mEvents[position- NO_OF_DAYS].eventId}" +
+                        "\nTitle ${mEvents[position- NO_OF_DAYS].eventTitle}" +
+                        "\nNote ${mEvents[position- NO_OF_DAYS].eventNote}" +
+                        "\nSchedule ${mEvents[position- NO_OF_DAYS].eventSchedule}" +
+                        "\nrange ${dateList[0].first.floorDateObject().time} ${dateList[NO_OF_DAYS-1].first.ceilDateObject().time}")
+            textViewEvent.text = mEvents[(position - NO_OF_DAYS)].eventTitle
             textViewEvent.background = null
 //            cellView.background = context.getDrawable(R.drawable.rect_border)
         }

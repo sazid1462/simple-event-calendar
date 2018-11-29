@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -38,27 +39,25 @@ class CreateEventFragment : DialogFragment() {
             val inflater = context?.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             rootView = inflater.inflate(R.layout.fragment_create_event, null)
 
-            val event_id = UUID.randomUUID()
-            val title = rootView.findViewById<EditText>(R.id.eventTitle).text
-            val note = rootView.findViewById<EditText>(R.id.eventNote).text
-            val datePicker = rootView.findViewById<DatePicker>(R.id.datePicker)
-            val timePicker = rootView.findViewById<TimePicker>(R.id.timePicker)
-            val schedule = DateTimeObject.getDateObject(
-                datePicker.year,
-                datePicker.month,
-                datePicker.dayOfMonth,
-                timePicker.hour,
-                timePicker.minute
-            )
-
             builder.setView(rootView)
                 .setTitle("Add Event")
                 .setPositiveButton(
                     R.string.create
                 ) { dialog, id ->
+                    val event_id = UUID.randomUUID()
+                    val title = rootView.findViewById<EditText>(R.id.eventTitle).text
+                    val note = rootView.findViewById<EditText>(R.id.eventNote).text
+                    val datePicker = rootView.findViewById<DatePicker>(R.id.datePicker)
+                    val timePicker = rootView.findViewById<TimePicker>(R.id.timePicker)
+                    val schedule = DateTimeObject.new(datePicker.year,
+                        datePicker.month,
+                        datePicker.dayOfMonth,
+                        timePicker.hour,
+                        timePicker.minute)
                     val er: EventRepository? =
                         EventRepository.getInstance(EventRoomDatabase.getInstance(context!!, AppExecutors()))
-                    er?.insert(Event(event_id.toString(), title.toString(), note.toString(), schedule.time))
+                    er?.insert(Event(event_id.toString(), title.toString(), note.toString(), schedule.date.time))
+                    Log.d("CreateEvent", "schedule ${schedule.date} month ${schedule.month} day ${schedule.day}")
                 }
                 .setNegativeButton(
                     R.string.cancel
@@ -74,13 +73,13 @@ class CreateEventFragment : DialogFragment() {
         super.onCreateView(inflater, container, savedInstanceState)
 
         if (dateTimeObject != null) {
-            val datePicker: DatePicker? = rootView?.findViewById(R.id.datePicker)
+            val datePicker: DatePicker? = rootView.findViewById(R.id.datePicker)
             datePicker?.updateDate(
                 dateTimeObject!!.year,
                 dateTimeObject!!.month,
                 dateTimeObject!!.day
             )
-            val timePicker: TimePicker? = rootView?.findViewById(R.id.timePicker)
+            val timePicker: TimePicker? = rootView.findViewById(R.id.timePicker)
             timePicker?.hour = dateTimeObject!!.hour
             timePicker?.minute = dateTimeObject!!.minute
         }

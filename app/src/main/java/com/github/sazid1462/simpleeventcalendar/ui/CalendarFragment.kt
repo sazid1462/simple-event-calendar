@@ -43,7 +43,7 @@ class CalendarFragment : Fragment() {
         monthViewerText = "${mMonths[cal.get(GregorianCalendar.MONTH)]} ${cal.get(GregorianCalendar.YEAR)}"
         Log.d("CalendarFragment", cal.time.toString())
         for (i in 0..6) {
-            val x = DateTimeObject(cal.time)
+            val x = DateTimeObject.new(cal.time)
             val isToday = x.day == TODAY_DAY && x.month == TODAY_MONTH && x.year == TODAY_YEAR
 
             dateList.add(Pair(x, isToday))
@@ -114,7 +114,7 @@ class CalendarFragment : Fragment() {
         // GridView for showing the events
         val eventGridview: GridView = rootView.findViewById(R.id.events)
         eventGridview.adapter = EventsGridCellAdapter(
-            this.context!!,
+            rootView.context,
             this,
             dateList
         )
@@ -158,6 +158,7 @@ class CalendarFragment : Fragment() {
          * number.
          */
         fun newInstance(): CalendarFragment {
+            cal.time = Date()
             val fragment = CalendarFragment()
             val args = Bundle()
             fragment.arguments = args
