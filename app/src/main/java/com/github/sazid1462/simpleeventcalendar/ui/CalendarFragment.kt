@@ -135,7 +135,8 @@ class CalendarFragment : Fragment() {
                     if (position < NO_OF_DAYS && dateList.size>position) {
                         showCreateEventDialog(dateList[position])
                     } else {
-                        if ((eventGridview.adapter as EventsGridCellAdapter).mEvents[position - NO_OF_DAYS] != null){
+                        if (position - NO_OF_DAYS > (eventGridview.adapter as EventsGridCellAdapter).mEvents.size
+                            && (eventGridview.adapter as EventsGridCellAdapter).mEvents[position - NO_OF_DAYS] != null){
                             showEventDetailsDialog((eventGridview.adapter as EventsGridCellAdapter).mEvents[position - NO_OF_DAYS]!!)
                         }
                     }
