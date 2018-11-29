@@ -13,4 +13,5 @@
     <string name="event_enter_note">Enter event note</string>
     <string name="event_duration">Event duration</string>
     <string name="event_schedule">Event Schedule</string>
+    <string name="ok">OK</string>
 </resources>

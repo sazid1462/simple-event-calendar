@@ -29,7 +29,7 @@ class EventsGridCellAdapter (private val context: Context, hostFragment: Fragmen
 
     // First, let's obtain an instance of GregorianCalendar.
     private var cal = GregorianCalendar.getInstance()
-    private var mEvents: MutableList<Event?> = ArrayList()
+    internal var mEvents: MutableList<Event?> = ArrayList()
     private var mEventViewModel: EventViewModel = ViewModelProviders.of(hostFragment,
         EventViewModel.EventViewModelFactory(hostFragment.activity!!.application,
             dateList[0].first.floorDateObject().time,

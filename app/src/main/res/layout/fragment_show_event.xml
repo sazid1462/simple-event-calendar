@@ -1,14 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.ShowEventFragment">
+    android:paddingLeft="@dimen/dialog_content_padding"
+    android:paddingRight="@dimen/dialog_content_padding"
+    tools:context=".ui.CreateEventFragment">
 
-    <TextView
-        style="@style/event_title"
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/eventNote"
+        style="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Subtitle"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="10dp"
+        android:hint="@string/event_enter_note"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/dummy" />
+        android:layout_height="wrap_content" />
 
-</FrameLayout>
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/eventSchedule"
+        style="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Subtitle"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="10dp"
+        android:labelFor="@id/schedulePicker"
+        android:text="@string/event_schedule"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+</androidx.appcompat.widget.LinearLayoutCompat>

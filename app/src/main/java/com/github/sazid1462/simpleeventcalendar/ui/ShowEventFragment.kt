@@ -5,13 +5,23 @@ import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.DatePicker
+import android.widget.TextView
+import android.widget.TimePicker
 import androidx.appcompat.app.AlertDialog
+import androidx.core.widget.TextViewCompat
 import androidx.fragment.app.DialogFragment
 import com.github.sazid1462.simpleeventcalendar.R
+import com.github.sazid1462.simpleeventcalendar.database.Event
 import java.util.*
 
 
 class ShowEventFragment  : DialogFragment() {
+    var event: Event? = null
+//    var dateTimeObject: DateTimeObject? = null
+    private lateinit var rootView: View
 
     @SuppressLint("InflateParams")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -21,34 +31,44 @@ class ShowEventFragment  : DialogFragment() {
             // Inflate and set the layout for the dialog
             // Pass null as the parent view because its going in the dialog layout
             val inflater = context?.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            builder.setView(inflater.inflate(R.layout.fragment_show_event, null))
-                .setTitle("Add Event")
-                .setPositiveButton(
-                    R.string.create
-                ) { dialog, id ->
-                    // FIRE ZE MISSILES! TODO
-                }
+            rootView = inflater.inflate(R.layout.fragment_show_event, null)
+            builder.setView(rootView)
+                .setTitle(event?.eventTitle)
                 .setNegativeButton(
-                    R.string.cancel
+                    R.string.ok
                 ) { dialog, id ->
-                    // User cancelled the dialog TODO
+                    // No need to do anything
                 }
             // Create the AlertDialog object and return it
             builder.create()
         } ?: throw IllegalStateException("Activity cannot be null")
     }
 
-    companion object {
-        private val cal = GregorianCalendar()
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        super.onCreateView(inflater, container, savedInstanceState)
 
+        val eventNote: TextView = rootView.findViewById(R.id.eventNote)
+        eventNote.text = event?.eventNote
+        val eventSchedule: TextView = rootView.findViewById(R.id.eventSchedule)
+        eventSchedule.text = Date(event?.eventSchedule!!).toString()
+
+        return rootView
+    }
+
+    companion object {
         /**
          * Returns a new instance of this fragment for the given section
          * number.
          */
-        fun newInstance(): DialogFragment {
-            val fragment = DialogFragment()
+        fun newInstance(event: Event): DialogFragment {
+            val fragment = ShowEventFragment()
             val args = Bundle()
             fragment.arguments = args
+
+//            val dateTimeObject: DateTimeObject = DateTimeObject.new(Date(event.eventSchedule!!))
+//            fragment.dateTimeObject = dateTimeObject
+            fragment.event = event
+
             return fragment
         }
     }

@@ -14,6 +14,7 @@ import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import com.github.sazid1462.simpleeventcalendar.R
+import com.github.sazid1462.simpleeventcalendar.database.Event
 import com.github.sazid1462.simpleeventcalendar.viewmodel.EventViewModel
 import com.google.android.material.button.MaterialButton
 import java.util.*
@@ -60,6 +61,12 @@ class CalendarFragment : Fragment() {
         val newFragment = CreateEventFragment.newInstance(pair?.first)
         newFragment.setTargetFragment(this, targetRequestCode)
         newFragment.show(activity?.supportFragmentManager, "createEvent")
+    }
+
+    fun showEventDetailsDialog(event: Event) {
+        val newFragment = ShowEventFragment.newInstance(event)
+        newFragment.setTargetFragment(this, targetRequestCode)
+        newFragment.show(activity?.supportFragmentManager, "showEvent")
     }
 
     @SuppressLint("SetTextI18n")
@@ -127,6 +134,10 @@ class CalendarFragment : Fragment() {
 //                    Toast.makeText(rootView.context, "$position", Toast.LENGTH_SHORT).show()
                     if (position < NO_OF_DAYS && dateList.size>position) {
                         showCreateEventDialog(dateList[position])
+                    } else {
+                        if ((eventGridview.adapter as EventsGridCellAdapter).mEvents[position - NO_OF_DAYS] != null){
+                            showEventDetailsDialog((eventGridview.adapter as EventsGridCellAdapter).mEvents[position - NO_OF_DAYS]!!)
+                        }
                     }
                 }
 

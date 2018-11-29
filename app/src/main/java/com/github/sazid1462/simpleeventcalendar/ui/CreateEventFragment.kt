@@ -86,13 +86,7 @@ class CreateEventFragment : DialogFragment() {
         return rootView
     }
 
-    private fun setDateTime(dateTimeObject: DateTimeObject) {
-        this.dateTimeObject = dateTimeObject
-    }
-
     companion object {
-        private val cal = GregorianCalendar()
-
         /**
          * Returns a new instance of this fragment for the given section
          * number.
@@ -102,7 +96,7 @@ class CreateEventFragment : DialogFragment() {
             val args = Bundle()
             fragment.arguments = args
             if (dateTimeObject != null) {
-                fragment.setDateTime(dateTimeObject)
+                fragment.dateTimeObject = dateTimeObject
             }
             return fragment
         }
