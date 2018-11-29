@@ -10,6 +10,7 @@ import android.widget.AdapterView.OnItemClickListener
 import android.widget.GridView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import com.github.sazid1462.simpleeventcalendar.R
@@ -27,6 +28,10 @@ class CalendarFragment : Fragment() {
     private val TODAY_DAY = cal.get(GregorianCalendar.DAY_OF_MONTH)
     private val TODAY_MONTH = cal.get(GregorianCalendar.MONTH)
     private val TODAY_YEAR = cal.get(GregorianCalendar.YEAR)
+
+    lateinit var monthViewer: TextView
+    lateinit var dateGridview: GridView
+    lateinit var eventsGridview: GridView
 
     /** Called when the activity is first created. */
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,50 +71,48 @@ class CalendarFragment : Fragment() {
         val rootView = inflater.inflate(R.layout.fragment_calendar, container, false)
 
         activity?.runOnUiThread {
-            val monthViewer: TextView = rootView.findViewById(R.id.month_viewer)
+            monthViewer = rootView.findViewById(R.id.month_viewer)
             monthViewer.text = monthViewerText
-            val dateGridview: GridView = registerDateGridView(rootView)
-            val eventsGridview: GridView = registerEventsGridView(rootView)
-            registerCalendarNavButtons(rootView, monthViewer, dateGridview, eventsGridview)
+            dateGridview = registerDateGridView(rootView)
+            eventsGridview = registerEventsGridView(rootView)
+            registerCalendarNavButtons(rootView)
+            registerCalendarFragmentGestures(rootView)
         }
         return rootView
     }
 
-    private fun registerCalendarNavButtons(
-        rootView: View,
-        monthViewer: TextView,
-        dateGridview: GridView,
-        eventsGridview: GridView
-    ) {
+    @SuppressLint("ClickableViewAccessibility")
+    private fun registerCalendarFragmentGestures(rootView: View) {
+        val calendarFragmentLayout = rootView.findViewById<LinearLayoutCompat>(R.id.calendarFragmentLayout)
+        calendarFragmentLayout.setOnTouchListener(createOnSwipeTouchListener(rootView))
+    }
+
+    private fun registerCalendarNavButtons(rootView: View) {
         val nextWeek: MaterialButton = rootView.findViewById(R.id.next_button)
         nextWeek.setOnClickListener { v ->
-            activity?.runOnUiThread {
-                AsyncRunner(
-                    {
-                        prepareCurrentWeek(0)
-                    }, {
-                        monthViewer.text = monthViewerText
-                        (dateGridview.adapter as CalendarGridCellAdapter).setDateList(dateList)
-                        (eventsGridview.adapter as EventsGridCellAdapter).setDateList(dateList)
-                    }).execute()
-            }
+            navigateCalendarWeek(0)
         }
 
         val prevWeek: MaterialButton = rootView.findViewById(R.id.prev_button)
         prevWeek.setOnClickListener { v ->
-            activity?.runOnUiThread {
-                AsyncRunner(
-                    {
-                        prepareCurrentWeek(-14)
-                    }, {
-                        monthViewer.text = monthViewerText
-                        (dateGridview.adapter as CalendarGridCellAdapter).setDateList(dateList)
-                        (eventsGridview.adapter as EventsGridCellAdapter).setDateList(dateList)
-                    }).execute()
-            }
+            navigateCalendarWeek(-14)
         }
     }
 
+    private fun navigateCalendarWeek(distance: Int) {
+        activity?.runOnUiThread {
+            AsyncRunner(
+                {
+                    prepareCurrentWeek(distance)
+                }, {
+                    monthViewer.text = monthViewerText
+                    (dateGridview.adapter as CalendarGridCellAdapter).setDateList(dateList)
+                    (eventsGridview.adapter as EventsGridCellAdapter).setDateList(dateList)
+                }).execute()
+        }
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
     private fun registerEventsGridView(rootView: View): GridView {
         // GridView for showing the events
         val eventGridview: GridView = rootView.findViewById(R.id.events)
@@ -121,12 +124,39 @@ class CalendarFragment : Fragment() {
 
         eventGridview.onItemClickListener =
                 OnItemClickListener { parent, v, position, id ->
-                    Toast.makeText(rootView.context, "$position", Toast.LENGTH_SHORT).show()
-                    if (position < NO_OF_DAYS) showCreateEventDialog(dateList[position])
+//                    Toast.makeText(rootView.context, "$position", Toast.LENGTH_SHORT).show()
+                    if (position < NO_OF_DAYS && dateList.size>position) {
+                        showCreateEventDialog(dateList[position])
+                    }
                 }
+
+        eventGridview.setOnTouchListener(createOnSwipeTouchListener(rootView))
         return eventGridview
     }
 
+    private fun createOnSwipeTouchListener(rootView: View): OnSwipeTouchListener {
+        return object : OnSwipeTouchListener(rootView.context) {
+            override fun onSwipeTop(): Boolean {
+                return true
+            }
+
+            override fun onSwipeRight(): Boolean {
+                navigateCalendarWeek(-14)
+                return true
+            }
+
+            override fun onSwipeLeft(): Boolean {
+                navigateCalendarWeek(0)
+                return true
+            }
+
+            override fun onSwipeBottom(): Boolean {
+                return true
+            }
+        }
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
     private fun registerDateGridView(rootView: View): GridView {
         // GridView for showing the dates
         val dateGridview: GridView = rootView.findViewById(R.id.calendar)
@@ -139,6 +169,9 @@ class CalendarFragment : Fragment() {
                 OnItemClickListener { parent, v, position, id ->
                     Toast.makeText(rootView.context, "$position", Toast.LENGTH_SHORT).show()
                 }
+
+        dateGridview.setOnTouchListener(createOnSwipeTouchListener(rootView))
+
         return dateGridview
     }
 
