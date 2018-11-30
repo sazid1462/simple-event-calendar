@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.github.sazid1462.simpleeventcalendar.ui.MainActivity">
     <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never" />
+        android:id="@+id/sign_in"
+        android:orderInCategory="103"
+        android:title="@string/action_sign_in"
+        app:showAsAction="ifRoom" />
 </menu>

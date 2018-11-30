@@ -25,3 +25,4 @@ val weekToMonth = arrayOf(
 
 val CREATE_EVENT_DIALOG_MODE = "create"
 val EDIT_EVENT_DIALOG_MODE = "edit"
+val RC_SIGN_IN = 100

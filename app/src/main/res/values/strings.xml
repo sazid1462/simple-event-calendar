@@ -20,4 +20,6 @@
     <string name="add_evnt">Add Event</string>
     <string name="edit_event">Edit Event</string>
     <string name="update">Update</string>
+    <string name="action_sign_in">Sign In</string>
+    <string name="action_sign_out">Sign Out</string>
 </resources>
