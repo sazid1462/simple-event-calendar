@@ -37,11 +37,28 @@ class EventRepository(eventRoomDatabase: EventRoomDatabase) {
         return mDatabase.eventDao().loadEvent(eventId)
     }
 
+    fun delete(event: Event) {
+        mDatabase.eventDao().delete(event)
+    }
+
+    fun update(event: Event) {
+        UpdateAsyncTask(mDatabase.eventDao()).execute(event)
+    }
+
     private class InsertAsyncTask internal constructor(private val mAsyncTaskDao: EventDao?) :
         AsyncTask<Event, Void, Void>() {
 
         override fun doInBackground(vararg params: Event): Void? {
             mAsyncTaskDao?.insert(params[0])
+            return null
+        }
+    }
+
+    private class UpdateAsyncTask internal constructor(private val mAsyncTaskDao: EventDao?) :
+        AsyncTask<Event, Void, Void>() {
+
+        override fun doInBackground(vararg params: Event): Void? {
+            mAsyncTaskDao?.update(params[0])
             return null
         }
     }

@@ -25,7 +25,9 @@ import java.util.*
 
 class CreateEventFragment : DialogFragment() {
 
-    var dateTimeObject: DateTimeObject? = null
+    private var dateTimeObject: DateTimeObject? = null
+    private var event: Event? = null
+    private var mode: String = CREATE_EVENT_DIALOG_MODE
 
     private lateinit var rootView: View
 
@@ -40,11 +42,11 @@ class CreateEventFragment : DialogFragment() {
             rootView = inflater.inflate(R.layout.fragment_create_event, null)
 
             builder.setView(rootView)
-                .setTitle("Add Event")
+                .setTitle(if (mode == CREATE_EVENT_DIALOG_MODE) getString(R.string.add_evnt) else getString(R.string.edit_event))
                 .setPositiveButton(
-                    R.string.create
+                    if (mode == CREATE_EVENT_DIALOG_MODE) getString(R.string.create) else getString(R.string.update)
                 ) { dialog, id ->
-                    val event_id = UUID.randomUUID()
+                    val event_id = if (mode == CREATE_EVENT_DIALOG_MODE) event!!.eventId else UUID.randomUUID().toString()
                     val title = rootView.findViewById<EditText>(R.id.eventTitle).text
                     val note = rootView.findViewById<EditText>(R.id.eventNote).text
                     val datePicker = rootView.findViewById<DatePicker>(R.id.datePicker)
@@ -56,7 +58,10 @@ class CreateEventFragment : DialogFragment() {
                         timePicker.minute)
                     val er: EventRepository? =
                         EventRepository.getInstance(EventRoomDatabase.getInstance(context!!, AppExecutors()))
-                    er?.insert(Event(event_id.toString(), title.toString(), note.toString(), schedule.date.time))
+
+                    if (mode == CREATE_EVENT_DIALOG_MODE) er?.insert(Event(event_id, title.toString(), note.toString(), schedule.date.time))
+                    else er?.update(Event(event_id, title.toString(), note.toString(), schedule.date.time))
+
                     Log.d("CreateEvent", "schedule ${schedule.date} month ${schedule.month} day ${schedule.day}")
                 }
                 .setNegativeButton(
@@ -95,9 +100,25 @@ class CreateEventFragment : DialogFragment() {
             val fragment = CreateEventFragment()
             val args = Bundle()
             fragment.arguments = args
-            if (dateTimeObject != null) {
-                fragment.dateTimeObject = dateTimeObject
-            }
+
+            fragment.dateTimeObject = dateTimeObject
+            fragment.mode = CREATE_EVENT_DIALOG_MODE
+
+            return fragment
+        }
+
+        /**
+         * Returns a new instance of this fragment for the given section
+         * number.
+         */
+        fun newInstance(event: Event): CreateEventFragment {
+            val fragment = CreateEventFragment()
+            val args = Bundle()
+            fragment.arguments = args
+
+            fragment.event = event
+            fragment.mode = EDIT_EVENT_DIALOG_MODE
+
             return fragment
         }
     }

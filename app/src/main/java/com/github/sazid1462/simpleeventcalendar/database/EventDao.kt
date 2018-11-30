@@ -2,10 +2,7 @@ package com.github.sazid1462.simpleeventcalendar.database
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
+import androidx.room.*
 import java.sql.Date
 
 @Dao
@@ -33,4 +30,7 @@ interface EventDao {
 
     @Delete
     fun delete(event: Event)
+
+    @Update
+    fun update(event: Event)
 }

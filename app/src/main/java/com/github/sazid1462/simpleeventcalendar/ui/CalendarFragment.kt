@@ -63,7 +63,13 @@ class CalendarFragment : Fragment() {
         newFragment.show(activity?.supportFragmentManager, "createEvent")
     }
 
-    fun showEventDetailsDialog(event: Event) {
+    fun showCreateEventDialog(event: Event) {
+        val newFragment = CreateEventFragment.newInstance(event)
+        newFragment.setTargetFragment(this, targetRequestCode)
+        newFragment.show(activity?.supportFragmentManager, "createEvent")
+    }
+
+    private fun showEventDetailsDialog(event: Event) {
         val newFragment = ShowEventFragment.newInstance(event)
         newFragment.setTargetFragment(this, targetRequestCode)
         newFragment.show(activity?.supportFragmentManager, "showEvent")
@@ -135,8 +141,8 @@ class CalendarFragment : Fragment() {
                     if (position < NO_OF_DAYS && dateList.size>position) {
                         showCreateEventDialog(dateList[position])
                     } else {
-                        if (position - NO_OF_DAYS > (eventGridview.adapter as EventsGridCellAdapter).mEvents.size
-                            && (eventGridview.adapter as EventsGridCellAdapter).mEvents[position - NO_OF_DAYS] != null){
+                        if (position - NO_OF_DAYS < (eventGridview.adapter as EventsGridCellAdapter).mEvents.size
+                            && (eventGridview.adapter as EventsGridCellAdapter).mEvents[position - NO_OF_DAYS] != null) {
                             showEventDetailsDialog((eventGridview.adapter as EventsGridCellAdapter).mEvents[position - NO_OF_DAYS]!!)
                         }
                     }
@@ -179,7 +185,7 @@ class CalendarFragment : Fragment() {
 
         dateGridview.onItemClickListener =
                 OnItemClickListener { parent, v, position, id ->
-                    Toast.makeText(rootView.context, "$position", Toast.LENGTH_SHORT).show()
+//                    Toast.makeText(rootView.context, "You have ", Toast.LENGTH_SHORT).show()
                 }
 
         dateGridview.setOnTouchListener(createOnSwipeTouchListener(rootView))

@@ -14,4 +14,10 @@
     <string name="event_duration">Event duration</string>
     <string name="event_schedule">Event Schedule</string>
     <string name="ok">OK</string>
+    <string name="delete">Delete</string>
+    <string name="close">Close</string>
+    <string name="edit">Edit</string>
+    <string name="add_evnt">Add Event</string>
+    <string name="edit_event">Edit Event</string>
+    <string name="update">Update</string>
 </resources>

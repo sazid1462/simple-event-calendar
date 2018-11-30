@@ -22,3 +22,6 @@ val mDaysOfWeek = arrayOf(
 val weekToMonth = arrayOf(
     4, 8, 13, 17, 22, 26, 30, 35, 39, 43, 48, 52
 )
+
+val CREATE_EVENT_DIALOG_MODE = "create"
+val EDIT_EVENT_DIALOG_MODE = "edit"

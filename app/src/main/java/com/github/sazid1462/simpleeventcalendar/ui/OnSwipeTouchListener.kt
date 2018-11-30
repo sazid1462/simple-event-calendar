@@ -16,9 +16,11 @@ open class OnSwipeTouchListener(context: Context) : OnTouchListener {
         gestureDetector = GestureDetector(context, GestureListener())
     }
 
-    override fun onTouch(v: View, event: MotionEvent): Boolean {
-        if (!gestureDetector.onTouchEvent(event)) v.performClick()
-        return gestureDetector.onTouchEvent(event)
+    override fun onTouch(v: View, e: MotionEvent): Boolean {
+        if (!gestureDetector.onTouchEvent(e) && e.action==MotionEvent.ACTION_UP) {
+            v.performClick()
+        }
+        return gestureDetector.onTouchEvent(e)
     }
 
     private inner class GestureListener : SimpleOnGestureListener() {
@@ -26,19 +28,18 @@ open class OnSwipeTouchListener(context: Context) : OnTouchListener {
         private val SWIPE_THRESHOLD = 100
         private val SWIPE_VELOCITY_THRESHOLD = 100
 
-        override fun onDown(e: MotionEvent): Boolean {
-            when (e.action) {
-                MotionEvent.ACTION_MOVE -> {
-                    return true
-                }
-            }// touch down code
-            // touch move code
-            // touch up code
-            return false
-        }
+//        override fun onDown(e: MotionEvent): Boolean {
+//            when (e.action) {
+//                MotionEvent.ACTION_MOVE -> {
+//                    return true
+//                }
+//            }// touch down code
+//            // touch move code
+//            // touch up code
+//            return false
+//        }
 
         override fun onFling(e1: MotionEvent, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
-            var result = false
             try {
                 val diffY = e2.y - e1.y
                 val diffX = e2.x - e1.x
@@ -49,7 +50,6 @@ open class OnSwipeTouchListener(context: Context) : OnTouchListener {
                         } else {
                             onSwipeLeft()
                         }
-                        result = true
                     }
                 } else if (Math.abs(diffY) > SWIPE_THRESHOLD && Math.abs(velocityY) > SWIPE_VELOCITY_THRESHOLD) {
                     if (diffY > 0) {
@@ -57,13 +57,13 @@ open class OnSwipeTouchListener(context: Context) : OnTouchListener {
                     } else {
                         onSwipeTop()
                     }
-                    result = true
                 }
             } catch (exception: Exception) {
                 exception.printStackTrace()
+                return false
             }
 
-            return result
+            return true
         }
 
     }

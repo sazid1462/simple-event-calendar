@@ -13,6 +13,7 @@ import android.widget.TimePicker
 import androidx.appcompat.app.AlertDialog
 import androidx.core.widget.TextViewCompat
 import androidx.fragment.app.DialogFragment
+import com.github.sazid1462.simpleeventcalendar.EventCalendarApp
 import com.github.sazid1462.simpleeventcalendar.R
 import com.github.sazid1462.simpleeventcalendar.database.Event
 import java.util.*
@@ -34,10 +35,20 @@ class ShowEventFragment  : DialogFragment() {
             rootView = inflater.inflate(R.layout.fragment_show_event, null)
             builder.setView(rootView)
                 .setTitle(event?.eventTitle)
-                .setNegativeButton(
-                    R.string.ok
+                .setPositiveButton(
+                    R.string.edit
+                ) { dialog, id ->
+                    (targetFragment as CalendarFragment).showCreateEventDialog(event!!)
+                }
+                .setNeutralButton(
+                    R.string.close
                 ) { dialog, id ->
                     // No need to do anything
+                }
+                .setNegativeButton(
+                    R.string.delete
+                ) { dialog, id ->
+                    (activity?.application as EventCalendarApp).repository.delete(event!!)
                 }
             // Create the AlertDialog object and return it
             builder.create()
