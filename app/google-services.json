@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "1090336429913",
+    "firebase_url": "https://simple-event-calendar-7a6b6.firebaseio.com",
+    "project_id": "simple-event-calendar-7a6b6",
+    "storage_bucket": "simple-event-calendar-7a6b6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1090336429913:android:a88a7d04c4df7b3c",
+        "android_client_info": {
+          "package_name": "com.github.sazid1462.simpleeventcalendar"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1090336429913-g69ab32dolkovpu0c399j1nuknslfth7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB0HKtq-NHwEMTmB-mCpLcE7vLU0dIQncU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
