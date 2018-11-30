@@ -40,7 +40,8 @@ class EventsGridCellAdapter (private val context: Context, hostFragment: Fragmen
         mEventViewModel.events.observe(hostFragment,
             Observer<List<Event>> { events ->
                 // Update the cached copy of the words in the adapter.
-                mEvents = ArrayList()
+                mEvents = ArrayList(70)
+                mEvents.addAll(arrayOfNulls(70))
                 val cnt: Array<Int> = arrayOf(0, 0, 0, 0, 0, 0, 0)
                 if (events != null) {
                     events.forEach { event ->

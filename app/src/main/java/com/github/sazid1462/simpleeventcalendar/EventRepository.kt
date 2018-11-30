@@ -3,14 +3,14 @@ package com.github.sazid1462.simpleeventcalendar
 import androidx.lifecycle.LiveData
 import android.os.AsyncTask
 import android.util.Log
-import androidx.lifecycle.MutableLiveData
 import com.github.sazid1462.simpleeventcalendar.database.Event
 import com.github.sazid1462.simpleeventcalendar.database.EventDao
 import com.github.sazid1462.simpleeventcalendar.database.EventRoomDatabase
 
 
-class EventRepository(eventRoomDatabase: EventRoomDatabase) {
+class EventRepository(eventRoomDatabase: EventRoomDatabase, executors: AppExecutors) {
     private var mDatabase: EventRoomDatabase = eventRoomDatabase
+    private var mExecutors: AppExecutors = executors
 
     init {
 //        mEvents = mDatabase.eventDao().loadAllEvents()
@@ -30,7 +30,10 @@ class EventRepository(eventRoomDatabase: EventRoomDatabase) {
     }
 
     fun insert(event: Event) {
-        InsertAsyncTask(mDatabase.eventDao()).execute(event)
+//        InsertAsyncTask(mDatabase.eventDao()).execute(event)
+        mExecutors.diskIO().execute {
+            mDatabase.eventDao().insert(event)
+        }
     }
 
     fun loadEvent(eventId: Int): LiveData<Event> {
@@ -38,28 +41,16 @@ class EventRepository(eventRoomDatabase: EventRoomDatabase) {
     }
 
     fun delete(event: Event) {
-        mDatabase.eventDao().delete(event)
-    }
-
-    fun update(event: Event) {
-        UpdateAsyncTask(mDatabase.eventDao()).execute(event)
-    }
-
-    private class InsertAsyncTask internal constructor(private val mAsyncTaskDao: EventDao?) :
-        AsyncTask<Event, Void, Void>() {
-
-        override fun doInBackground(vararg params: Event): Void? {
-            mAsyncTaskDao?.insert(params[0])
-            return null
+//        mDatabase.eventDao().delete(event)
+        mExecutors.diskIO().execute {
+            mDatabase.eventDao().delete(event)
         }
     }
 
-    private class UpdateAsyncTask internal constructor(private val mAsyncTaskDao: EventDao?) :
-        AsyncTask<Event, Void, Void>() {
-
-        override fun doInBackground(vararg params: Event): Void? {
-            mAsyncTaskDao?.update(params[0])
-            return null
+    fun update(event: Event) {
+//        UpdateAsyncTask(mDatabase.eventDao()).execute(event)
+        mExecutors.diskIO().execute {
+            mDatabase.eventDao().update(event)
         }
     }
 
@@ -68,11 +59,11 @@ class EventRepository(eventRoomDatabase: EventRoomDatabase) {
         @Volatile
         private var INSTANCE: EventRepository? = null
 
-        fun getInstance(database: EventRoomDatabase): EventRepository? {
+        fun getInstance(database: EventRoomDatabase, executors: AppExecutors?): EventRepository? {
             if (INSTANCE == null) {
                 synchronized(EventRepository::class.java) {
                     if (INSTANCE == null) {
-                        INSTANCE = EventRepository(database)
+                        INSTANCE = EventRepository(database, executors!!)
                     }
                 }
             }

@@ -15,7 +15,7 @@ class EventCalendarApp : Application() {
         get() = EventRoomDatabase.getInstance(this, mAppExecutors)
 
     val repository: EventRepository
-        get() = EventRepository.getInstance(database)!!
+        get() = EventRepository.getInstance(database, mAppExecutors)!!
 
     override fun onCreate() {
         super.onCreate()
