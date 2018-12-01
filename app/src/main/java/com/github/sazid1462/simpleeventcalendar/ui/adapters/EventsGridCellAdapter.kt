@@ -73,10 +73,8 @@ class EventsGridCellAdapter (private val context: Context, hostFragment: Fragmen
     fun setDateList(dateList: ArrayList<Pair<DateTimeObject, Boolean>>) {
         this.dateList = dateList
         Log.d("CellAdapter setDate", "start ${dateList[0].first.floorDateObject().time} end ${dateList[NO_OF_DAYS -1].first.ceilDateObject().time}")
-        // TODO update mEvents
         mEventViewModel.updateDataSet(dateList[0].first.floorDateObject().time,
             dateList[NO_OF_DAYS -1].first.ceilDateObject().time)
-//        notifyDataSetInvalidated()
     }
 
     // create a new ImageView for each item referenced by the Adapter
