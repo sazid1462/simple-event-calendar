@@ -16,6 +16,7 @@ android {
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
+        resConfigs "en" // And any other languages you support
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -62,7 +63,9 @@ dependencies {
     testImplementation "androidx.room:room-testing:$room_version"
 
     implementation 'com.google.firebase:firebase-core:16.0.5'
-    implementation 'com.firebaseui:firebase-ui-auth:4.2.0'
+    implementation 'com.firebaseui:firebase-ui-auth:4.2.1'
+    // FirebaseUI for Firebase Realtime Database
+    implementation 'com.firebaseui:firebase-ui-database:4.2.1'
 }
 
 apply plugin: 'com.google.gms.google-services'

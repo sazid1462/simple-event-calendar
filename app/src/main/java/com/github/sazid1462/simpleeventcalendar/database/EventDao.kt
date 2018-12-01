@@ -7,20 +7,20 @@ import java.sql.Date
 
 @Dao
 interface EventDao {
-    @Query("SELECT * FROM event")
-    fun loadAllEvents(): LiveData<List<Event>>
+    @Query("SELECT * FROM event WHERE user_id = :userId")
+    fun loadAllEvents(userId: String): LiveData<List<Event>>
 
-    @Query("SELECT * FROM event WHERE event_id IN (:eventIds)")
-    fun loadAllByIds(eventIds: IntArray): LiveData<List<Event>>
+    @Query("SELECT * FROM event WHERE event_id IN (:eventIds) AND user_id = :userId")
+    fun loadAllByIds(eventIds: IntArray, userId: String): LiveData<List<Event>>
 
-    @Query("SELECT * FROM event WHERE event_schedule BETWEEN :startDate AND :endDate")
-    fun loadAllByScheduleRange(startDate: Long, endDate: Long): LiveData<List<Event>>
+    @Query("SELECT * FROM event WHERE (event_schedule BETWEEN :startDate AND :endDate) AND user_id = :userId")
+    fun loadAllByScheduleRange(startDate: Long, endDate: Long, userId: String): LiveData<List<Event>>
 
-    @Query("SELECT * FROM event WHERE event_id = :eventId")
-    fun loadEvent(eventId: Int): LiveData<Event>
+    @Query("SELECT * FROM event WHERE event_id = :eventId AND user_id = :userId")
+    fun loadEvent(eventId: Int, userId: String): LiveData<Event>
 
-    @Query("SELECT * FROM event WHERE event_title LIKE :title LIMIT 1")
-    fun findByTitle(title: String): LiveData<Event>
+    @Query("SELECT * FROM event WHERE event_title LIKE :title AND user_id = :userId LIMIT 1")
+    fun findByTitle(title: String, userId: String): LiveData<Event>
 
     @Insert
     fun insertAll(vararg events: Event)

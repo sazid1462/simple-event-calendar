@@ -1,4 +1,4 @@
-package com.github.sazid1462.simpleeventcalendar.ui
+package com.github.sazid1462.simpleeventcalendar.ui.fragments
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -9,13 +9,13 @@ import android.view.ViewGroup
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.GridView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProviders
 import com.github.sazid1462.simpleeventcalendar.R
 import com.github.sazid1462.simpleeventcalendar.database.Event
-import com.github.sazid1462.simpleeventcalendar.viewmodel.EventViewModel
+import com.github.sazid1462.simpleeventcalendar.ui.*
+import com.github.sazid1462.simpleeventcalendar.ui.adapters.CalendarGridCellAdapter
+import com.github.sazid1462.simpleeventcalendar.ui.adapters.EventsGridCellAdapter
 import com.google.android.material.button.MaterialButton
 import java.util.*
 import kotlin.math.abs
@@ -49,9 +49,12 @@ class CalendarFragment : Fragment() {
         monthViewerText = "${mMonths[cal.get(GregorianCalendar.MONTH)]} ${cal.get(GregorianCalendar.YEAR)}"
         Log.d("CalendarFragment", cal.time.toString())
         for (i in 0..6) {
-            val x = DateTimeObject.new(cal.time)
+            val x =
+                DateTimeObject.new(cal.time)
             val isToday = x.day == TODAY_DAY && x.month == TODAY_MONTH && x.year == TODAY_YEAR
-
+            if (isToday) {
+                monthViewerText = "${mMonths[x.month]} ${x.year}"
+            }
             dateList.add(Pair(x, isToday))
             cal.add(GregorianCalendar.DAY_OF_MONTH, 1)
         }
@@ -85,7 +88,8 @@ class CalendarFragment : Fragment() {
 
         activity?.runOnUiThread {
             monthViewer = rootView.findViewById(R.id.month_viewer)
-            monthViewer.text = monthViewerText
+            monthViewer.text =
+                    monthViewerText
             dateGridview = registerDateGridView(rootView)
             eventsGridview = registerEventsGridView(rootView)
             registerCalendarNavButtons(rootView)
@@ -118,9 +122,14 @@ class CalendarFragment : Fragment() {
                 {
                     prepareCurrentWeek(distance)
                 }, {
-                    monthViewer.text = monthViewerText
-                    (dateGridview.adapter as CalendarGridCellAdapter).setDateList(dateList)
-                    (eventsGridview.adapter as EventsGridCellAdapter).setDateList(dateList)
+                    monthViewer.text =
+                            monthViewerText
+                    (dateGridview.adapter as CalendarGridCellAdapter).setDateList(
+                        dateList
+                    )
+                    (eventsGridview.adapter as EventsGridCellAdapter).setDateList(
+                        dateList
+                    )
                 }).execute()
         }
     }

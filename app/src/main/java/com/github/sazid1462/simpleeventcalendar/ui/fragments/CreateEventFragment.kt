@@ -1,10 +1,9 @@
-package com.github.sazid1462.simpleeventcalendar.ui
+package com.github.sazid1462.simpleeventcalendar.ui.fragments
 
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
-import android.text.Editable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -14,12 +13,13 @@ import android.widget.EditText
 import android.widget.TimePicker
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
-import com.github.sazid1462.simpleeventcalendar.AppExecutors
 import com.github.sazid1462.simpleeventcalendar.EventCalendarApp
 import com.github.sazid1462.simpleeventcalendar.EventRepository
 import com.github.sazid1462.simpleeventcalendar.R
 import com.github.sazid1462.simpleeventcalendar.database.Event
-import com.github.sazid1462.simpleeventcalendar.database.EventRoomDatabase
+import com.github.sazid1462.simpleeventcalendar.ui.CREATE_EVENT_DIALOG_MODE
+import com.github.sazid1462.simpleeventcalendar.ui.DateTimeObject
+import com.github.sazid1462.simpleeventcalendar.ui.EDIT_EVENT_DIALOG_MODE
 import java.util.*
 
 
@@ -58,17 +58,36 @@ class CreateEventFragment : DialogFragment() {
                 .setPositiveButton(
                     if (mode == CREATE_EVENT_DIALOG_MODE) getString(R.string.create) else getString(R.string.update)
                 ) { dialog, id ->
-                    val event_id = if (mode == CREATE_EVENT_DIALOG_MODE) UUID.randomUUID().toString() else event!!.eventId
+                    val event_id =
+                        if (mode == CREATE_EVENT_DIALOG_MODE) UUID.randomUUID().toString() else event!!.eventId
                     val title = titleEditText.text
                     val note = noteEditText.text
-                    val schedule = DateTimeObject.new(datePicker.year,
+                    val schedule = DateTimeObject.new(
+                        datePicker.year,
                         datePicker.month,
                         datePicker.dayOfMonth,
                         timePicker.hour,
-                        timePicker.minute)
+                        timePicker.minute
+                    )
                     val er: EventRepository? = (activity?.application as EventCalendarApp).repository
-                    if (mode == CREATE_EVENT_DIALOG_MODE) er?.insert(Event(event_id, title.toString(), note.toString(), schedule.date.time))
-                    else er?.update(Event(event_id, title.toString(), note.toString(), schedule.date.time))
+                    if (mode == CREATE_EVENT_DIALOG_MODE) er?.insert(
+                        Event(
+                            event_id,
+                            (activity?.application as EventCalendarApp).user!!.uid,
+                            title.toString(),
+                            note.toString(),
+                            schedule.date.time
+                        )
+                    )
+                    else er?.update(
+                        Event(
+                            event_id,
+                            (activity?.application as EventCalendarApp).user!!.uid,
+                            title.toString(),
+                            note.toString(),
+                            schedule.date.time
+                        )
+                    )
 
                     Log.d("CreateEvent", "schedule ${schedule.date} month ${schedule.month} day ${schedule.day}")
                 }
@@ -126,7 +145,8 @@ class CreateEventFragment : DialogFragment() {
             val args = Bundle()
             fragment.arguments = args
 
-            fragment.dateTimeObject = DateTimeObject.new(Date(event.eventSchedule!!))
+            fragment.dateTimeObject =
+                    DateTimeObject.new(Date(event.eventSchedule!!))
             fragment.event = event
             fragment.mode = EDIT_EVENT_DIALOG_MODE
 

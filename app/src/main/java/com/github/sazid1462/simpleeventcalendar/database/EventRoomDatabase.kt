@@ -11,7 +11,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 
 
-@Database(entities = arrayOf(Event::class), version = 1)
+@Database(entities = arrayOf(Event::class), version = 2)
 abstract class EventRoomDatabase : RoomDatabase() {
     abstract fun eventDao(): EventDao
     private val mIsDatabaseCreated = MutableLiveData<Boolean>()
@@ -75,6 +75,7 @@ abstract class EventRoomDatabase : RoomDatabase() {
                         }
                     }
                 })
+                .fallbackToDestructiveMigration()
 //            .addMigrations(MIGRATION_1_2)
                 .build()
         }

@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/lightgray"
-    tools:context=".ui.CalendarFragment"
+    tools:context=".ui.fragments.CalendarFragment"
     tools:ignore="InefficientWeight,ContentDescription">
 
     <androidx.appcompat.widget.LinearLayoutCompat

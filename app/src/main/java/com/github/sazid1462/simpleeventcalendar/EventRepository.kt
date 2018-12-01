@@ -1,5 +1,6 @@
 package com.github.sazid1462.simpleeventcalendar
 
+import android.app.Application
 import androidx.lifecycle.LiveData
 import android.os.AsyncTask
 import android.util.Log
@@ -8,23 +9,20 @@ import com.github.sazid1462.simpleeventcalendar.database.EventDao
 import com.github.sazid1462.simpleeventcalendar.database.EventRoomDatabase
 
 
-class EventRepository(eventRoomDatabase: EventRoomDatabase, executors: AppExecutors) {
+class EventRepository(eventRoomDatabase: EventRoomDatabase, executors: AppExecutors, application: EventCalendarApp) {
     private var mDatabase: EventRoomDatabase = eventRoomDatabase
     private var mExecutors: AppExecutors = executors
-
-    init {
-//        mEvents = mDatabase.eventDao().loadAllEvents()
-    }
+    private var mApplication: EventCalendarApp = application
 
     /**
      * Get the list of events from the database and get notified when the data changes.
      */
     fun getAllEvents(): LiveData<List<Event>> {
-        return mDatabase.eventDao().loadAllEvents()
+        return mDatabase.eventDao().loadAllEvents(mApplication.user!!.uid)
     }
 
     fun getEventsBySchedule(startDate: Long, endDate: Long): LiveData<List<Event>> {
-        val newEvents = mDatabase.eventDao().loadAllByScheduleRange(startDate, endDate)
+        val newEvents = mDatabase.eventDao().loadAllByScheduleRange(startDate, endDate, mApplication.user!!.uid)
         Log.d("EventRepository get", "start $startDate end $endDate items ${newEvents}")
         return newEvents
     }
@@ -37,7 +35,7 @@ class EventRepository(eventRoomDatabase: EventRoomDatabase, executors: AppExecut
     }
 
     fun loadEvent(eventId: Int): LiveData<Event> {
-        return mDatabase.eventDao().loadEvent(eventId)
+        return mDatabase.eventDao().loadEvent(eventId, mApplication.user!!.uid)
     }
 
     fun delete(event: Event) {
@@ -59,11 +57,11 @@ class EventRepository(eventRoomDatabase: EventRoomDatabase, executors: AppExecut
         @Volatile
         private var INSTANCE: EventRepository? = null
 
-        fun getInstance(database: EventRoomDatabase, executors: AppExecutors?): EventRepository? {
+        fun getInstance(database: EventRoomDatabase, executors: AppExecutors?, application: EventCalendarApp): EventRepository? {
             if (INSTANCE == null) {
                 synchronized(EventRepository::class.java) {
                     if (INSTANCE == null) {
-                        INSTANCE = EventRepository(database, executors!!)
+                        INSTANCE = EventRepository(database, executors!!, application)
                     }
                 }
             }

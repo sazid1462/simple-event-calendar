@@ -11,11 +11,11 @@ import androidx.appcompat.app.AppCompatActivity
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.IdpResponse
 import com.github.sazid1462.simpleeventcalendar.R
-import com.github.sazid1462.simpleeventcalendar.database.EventRoomDatabase
 import kotlinx.android.synthetic.main.activity_main.*
 import com.github.sazid1462.simpleeventcalendar.AppExecutors
-import com.github.sazid1462.simpleeventcalendar.EventRepository
-import com.google.android.gms.auth.api.Auth
+import com.github.sazid1462.simpleeventcalendar.EventCalendarApp
+import com.github.sazid1462.simpleeventcalendar.ui.fragments.CalendarFragment
+import com.github.sazid1462.simpleeventcalendar.ui.fragments.SignInAlertDialogFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 
@@ -35,7 +35,42 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
+        
+        mAppExecutors = AppExecutors()
+    }
 
+    internal fun showSignIn() {
+        startActivityForResult(
+            AuthUI.getInstance()
+                .createSignInIntentBuilder()
+                .setAvailableProviders(providers)
+                .setLogo(R.mipmap.ic_launcher)      // Set logo drawable
+                .setTheme(R.style.AppTheme_Dialog)      // Set theme
+                .setIsSmartLockEnabled(false)
+                .build(), RC_SIGN_IN
+        )
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        val inflater: MenuInflater = menuInflater
+        inflater.inflate(R.menu.menu_main, menu)
+        this.menu = menu
+        val auth = FirebaseAuth.getInstance()
+        if (auth.currentUser != null) {
+            // already signed in
+            updateUI(auth.currentUser, menu)
+        } else {
+            // not signed in
+            // Create and launch sign-in intent
+            showSignIn()
+        }
+        return true
+    }
+
+    private fun updateUI(user: FirebaseUser?, menu: Menu) {
+        this.user = user
+        (application as EventCalendarApp).user = user
+        // ...
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
         val fragment = CalendarFragment.newInstance()
@@ -45,29 +80,12 @@ class MainActivity : AppCompatActivity() {
         fab.setOnClickListener { view ->
             fragment.showCreateEventDialog(null)
         }
-        
-        mAppExecutors = AppExecutors()
-
-        // Create and launch sign-in intent
-        showSignIn()
+        menu.getItem(0).title = getString(R.string.action_sign_out)
     }
 
-    private fun showSignIn() {
-        startActivityForResult(
-            AuthUI.getInstance()
-                .createSignInIntentBuilder()
-                .setAvailableProviders(providers)
-                .setLogo(R.mipmap.ic_launcher)      // Set logo drawable
-                .setTheme(R.style.AppTheme_Dialog)      // Set theme
-                .build(), RC_SIGN_IN
-        )
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        val inflater: MenuInflater = menuInflater
-        inflater.inflate(R.menu.menu_main, menu)
-        this.menu = menu
-        return true
+    fun showSignInAlertDialog(msg: String) {
+        val newFragment = SignInAlertDialogFragment.newInstance(msg)
+        newFragment.show(supportFragmentManager, "signIn")
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -78,9 +96,7 @@ class MainActivity : AppCompatActivity() {
 
             if (resultCode == Activity.RESULT_OK) {
                 // Successfully signed in
-                user = FirebaseAuth.getInstance().currentUser
-                // ...
-                menu.getItem(0).title = getString(R.string.action_sign_out)
+                updateUI(FirebaseAuth.getInstance().currentUser, menu)
             } else {
                 // Sign in failed. If response is null the user canceled the
                 // sign-in flow using the back button. Otherwise check
@@ -88,8 +104,10 @@ class MainActivity : AppCompatActivity() {
                 // ...
                 if (response == null) {
                     Toast.makeText(this, "Please sign in to store the data in cloud.", Toast.LENGTH_LONG).show()
+                    showSignInAlertDialog("Please sign in first.")
                 } else {
-                    Toast.makeText(this, "Sign in failed! You won't be able to store the data in cloud.", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "Sign in failed!", Toast.LENGTH_LONG).show()
+                    showSignInAlertDialog("Sign in failed! Retry?")
                 }
             }
         }
@@ -103,9 +121,11 @@ class MainActivity : AppCompatActivity() {
                     showSignIn()
                 } else {
                     FirebaseAuth.getInstance().signOut()
-                    menu.getItem(0).title = getString(R.string.action_sign_in)
-                    user = null
-                    Toast.makeText(this, "You've been signed out. Please sign in to store the data in cloud.", Toast.LENGTH_LONG).show()
+                    val intent = Intent(Intent.ACTION_MAIN)
+                    intent.addCategory(Intent.CATEGORY_HOME)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    startActivity(intent)
+                    finish()
                 }
                 true
             }

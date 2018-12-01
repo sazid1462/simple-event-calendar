@@ -1,4 +1,4 @@
-package com.github.sazid1462.simpleeventcalendar.ui
+package com.github.sazid1462.simpleeventcalendar.ui.adapters
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -10,7 +10,9 @@ import java.util.*
 import android.view.LayoutInflater
 import android.widget.TextView
 import com.github.sazid1462.simpleeventcalendar.R
-import com.google.android.material.button.MaterialButton
+import com.github.sazid1462.simpleeventcalendar.ui.DateTimeObject
+import com.github.sazid1462.simpleeventcalendar.ui.NO_OF_DAYS
+import com.github.sazid1462.simpleeventcalendar.ui.mDaysOfWeek
 import kotlin.collections.ArrayList
 
 class CalendarGridCellAdapter(private val context: Context, private var dateList: ArrayList<Pair<DateTimeObject, Boolean>>) :

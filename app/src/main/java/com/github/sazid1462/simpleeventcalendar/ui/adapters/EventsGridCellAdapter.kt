@@ -1,7 +1,6 @@
-package com.github.sazid1462.simpleeventcalendar.ui
+package com.github.sazid1462.simpleeventcalendar.ui.adapters
 
 import android.content.Context
-import android.text.format.DateUtils
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
@@ -10,19 +9,16 @@ import android.widget.BaseAdapter
 import java.util.*
 import android.view.LayoutInflater
 import android.widget.TextView
-import androidx.annotation.Nullable
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import com.github.sazid1462.simpleeventcalendar.R
 import com.github.sazid1462.simpleeventcalendar.database.Event
 import com.github.sazid1462.simpleeventcalendar.viewmodel.EventViewModel
 import androidx.lifecycle.ViewModelProviders
+import com.github.sazid1462.simpleeventcalendar.ui.DateTimeObject
+import com.github.sazid1462.simpleeventcalendar.ui.NO_OF_DAYS
 import java.sql.Date
-import java.sql.Timestamp
-import java.util.function.Consumer
 import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 
 class EventsGridCellAdapter (private val context: Context, hostFragment: Fragment, private var dateList: ArrayList<Pair<DateTimeObject, Boolean>>) : BaseAdapter() {
@@ -33,7 +29,7 @@ class EventsGridCellAdapter (private val context: Context, hostFragment: Fragmen
     private var mEventViewModel: EventViewModel = ViewModelProviders.of(hostFragment,
         EventViewModel.EventViewModelFactory(hostFragment.activity!!.application,
             dateList[0].first.floorDateObject().time,
-            dateList[NO_OF_DAYS-1].first.ceilDateObject().time)).get(EventViewModel::class.java)
+            dateList[NO_OF_DAYS -1].first.ceilDateObject().time)).get(EventViewModel::class.java)
 
     init {
 //        mEventViewModel.events.observe(hostFragment,
@@ -46,7 +42,8 @@ class EventsGridCellAdapter (private val context: Context, hostFragment: Fragmen
                 if (events != null) {
                     events.forEach { event ->
                         run {
-                            val schedule = DateTimeObject.new(Date(event.eventSchedule!!))
+                            val schedule =
+                                DateTimeObject.new(Date(event.eventSchedule!!))
                             val idx = (schedule.day - dateList[0].first.day) + (cnt[schedule.day - dateList[0].first.day] * NO_OF_DAYS)
                             if (idx >= mEvents.size) {
                                 val shortage = (idx - mEvents.size + 1)
@@ -75,10 +72,10 @@ class EventsGridCellAdapter (private val context: Context, hostFragment: Fragmen
 
     fun setDateList(dateList: ArrayList<Pair<DateTimeObject, Boolean>>) {
         this.dateList = dateList
-        Log.d("CellAdapter setDate", "start ${dateList[0].first.floorDateObject().time} end ${dateList[NO_OF_DAYS-1].first.ceilDateObject().time}")
+        Log.d("CellAdapter setDate", "start ${dateList[0].first.floorDateObject().time} end ${dateList[NO_OF_DAYS -1].first.ceilDateObject().time}")
         // TODO update mEvents
         mEventViewModel.updateDataSet(dateList[0].first.floorDateObject().time,
-            dateList[NO_OF_DAYS-1].first.ceilDateObject().time)
+            dateList[NO_OF_DAYS -1].first.ceilDateObject().time)
 //        notifyDataSetInvalidated()
     }
 
@@ -106,7 +103,7 @@ class EventsGridCellAdapter (private val context: Context, hostFragment: Fragmen
                             "\nTitle ${mEvents[position- NO_OF_DAYS]?.eventTitle}" +
                             "\nNote ${mEvents[position- NO_OF_DAYS]?.eventNote}" +
                             "\nSchedule ${mEvents[position- NO_OF_DAYS]?.eventSchedule}" +
-                            "\nrange ${dateList[0].first.floorDateObject().time} ${dateList[NO_OF_DAYS-1].first.ceilDateObject().time}")
+                            "\nrange ${dateList[0].first.floorDateObject().time} ${dateList[NO_OF_DAYS -1].first.ceilDateObject().time}")
                 textViewEvent.text = mEvents[(position - NO_OF_DAYS)]?.eventTitle
             } else {
                 textViewEvent.text = ""

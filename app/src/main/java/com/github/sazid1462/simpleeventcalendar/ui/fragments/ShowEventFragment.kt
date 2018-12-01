@@ -1,4 +1,4 @@
-package com.github.sazid1462.simpleeventcalendar.ui
+package com.github.sazid1462.simpleeventcalendar.ui.fragments
 
 import android.annotation.SuppressLint
 import android.app.Dialog
@@ -7,11 +7,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.DatePicker
 import android.widget.TextView
-import android.widget.TimePicker
 import androidx.appcompat.app.AlertDialog
-import androidx.core.widget.TextViewCompat
 import androidx.fragment.app.DialogFragment
 import com.github.sazid1462.simpleeventcalendar.EventCalendarApp
 import com.github.sazid1462.simpleeventcalendar.R
