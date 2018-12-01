@@ -16,7 +16,6 @@ import com.google.firebase.database.FirebaseDatabase
 class EventRepository(eventRoomDatabase: EventRoomDatabase, executors: AppExecutors, private val application: EventCalendarApp) {
     private var mDatabase: EventRoomDatabase = eventRoomDatabase
     private var mExecutors: AppExecutors = executors
-    private var mApplication: EventCalendarApp = application
     private var firebaseEventReference: DatabaseReference? = null
 
     private val firebaseLiveData: EventFirebaseLiveData = EventFirebaseLiveData()
@@ -29,6 +28,7 @@ class EventRepository(eventRoomDatabase: EventRoomDatabase, executors: AppExecut
 
     fun onUserLogIn(user: FirebaseUser?) {
         if (user == null) return
+        currentEvent = null
         firebaseEventReference = FirebaseDatabase.getInstance().getReference("/event/${application.user?.uid}")
         firebaseLiveData.setReference(firebaseEventReference!!)
         mExecutors.networkIO().execute {
@@ -42,7 +42,10 @@ class EventRepository(eventRoomDatabase: EventRoomDatabase, executors: AppExecut
             for (event in dsEvents!!) {
                 val mEvent: Event = event.getValue(Event::class.java)!!
                 // Skip if the change notification is due to self change
-                if (mEvent.eventId == currentEvent?.eventId) continue
+                if (mEvent.eventId == currentEvent?.eventId) {
+                    Log.d("EventRepository", "Event ${mEvent.eventTitle} is currently processed. skipping")
+                    continue
+                }
                 insertIntoLocalDB(mEvent)
             }
         }
