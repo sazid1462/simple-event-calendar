@@ -65,6 +65,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-core:16.0.5'
     implementation 'com.firebaseui:firebase-ui-auth:4.2.1'
     // FirebaseUI for Firebase Realtime Database
+    implementation 'com.google.firebase:firebase-database:16.0.5'
     implementation 'com.firebaseui:firebase-ui-database:4.2.1'
 }
 

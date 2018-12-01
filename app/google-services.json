@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "1090336429913-qo2lk72l0hn4ui4udgndoqgs8rrjigd0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.github.sazid1462.simpleeventcalendar",
+            "certificate_hash": "fc787f90f9a0c46cd734e7c5c16fa4588c0f23d6"
+          }
+        },
+        {
           "client_id": "1090336429913-g69ab32dolkovpu0c399j1nuknslfth7.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -29,8 +37,13 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1090336429913-g69ab32dolkovpu0c399j1nuknslfth7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
           "status": 2

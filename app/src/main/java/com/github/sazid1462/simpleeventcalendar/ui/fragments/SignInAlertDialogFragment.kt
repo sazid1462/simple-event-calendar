@@ -1,6 +1,8 @@
 package com.github.sazid1462.simpleeventcalendar.ui.fragments
 
+import android.annotation.SuppressLint
 import android.app.Dialog
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -28,7 +30,7 @@ class SignInAlertDialogFragment : DialogFragment() {
             // Inflate and set the layout for the dialog
             // Pass null as the parent view because its going in the dialog layout
 
-            builder.setView(rootView)
+            builder
                 .setTitle(getString(R.string.app_name))
                 .setMessage(msg)
                 .setPositiveButton(
@@ -37,13 +39,9 @@ class SignInAlertDialogFragment : DialogFragment() {
                     (activity as MainActivity).showSignIn()
                 }
                 .setNegativeButton(
-                    R.string.close
+                    R.string.skip
                 ) { dialog, id ->
-                    val intent = Intent(Intent.ACTION_MAIN)
-                    intent.addCategory(Intent.CATEGORY_HOME)
-                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                    startActivity(intent)
-                    activity?.finish()
+                    (activity as MainActivity).startOffline()
                 }
             // Create the AlertDialog object and return it
             builder.create()

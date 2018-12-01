@@ -70,25 +70,25 @@ class CreateEventFragment : DialogFragment() {
                         timePicker.minute
                     )
                     val er: EventRepository? = (activity?.application as EventCalendarApp).repository
-                    if (mode == CREATE_EVENT_DIALOG_MODE) er?.insert(
-                        Event(
+                    if (mode == CREATE_EVENT_DIALOG_MODE) run {
+                        val nEvent = Event(
                             event_id,
-                            (activity?.application as EventCalendarApp).user!!.uid,
+                            (activity?.application as EventCalendarApp).user?.uid,
                             title.toString(),
                             note.toString(),
                             schedule.date.time
                         )
-                    )
-                    else er?.update(
-                        Event(
+                        er?.insert(nEvent)
+                    } else run {
+                        val nEvent = Event(
                             event_id,
-                            (activity?.application as EventCalendarApp).user!!.uid,
+                            (activity?.application as EventCalendarApp).user?.uid,
                             title.toString(),
                             note.toString(),
                             schedule.date.time
                         )
-                    )
-
+                        er?.update(nEvent)
+                    }
                     Log.d("CreateEvent", "schedule ${schedule.date} month ${schedule.month} day ${schedule.day}")
                 }
                 .setNegativeButton(

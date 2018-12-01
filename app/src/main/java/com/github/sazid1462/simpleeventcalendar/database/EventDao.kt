@@ -10,14 +10,23 @@ interface EventDao {
     @Query("SELECT * FROM event WHERE user_id = :userId")
     fun loadAllEvents(userId: String): LiveData<List<Event>>
 
-    @Query("SELECT * FROM event WHERE event_id IN (:eventIds) AND user_id = :userId")
-    fun loadAllByIds(eventIds: IntArray, userId: String): LiveData<List<Event>>
+    @Query("SELECT * FROM event WHERE user_id IS NULL")
+    fun loadAllEventsOffline(): LiveData<List<Event>>
+
+    @Query("SELECT * FROM event WHERE user_id IS NULL")
+    fun loadAllUnsyncedEvents(): List<Event>
 
     @Query("SELECT * FROM event WHERE (event_schedule BETWEEN :startDate AND :endDate) AND user_id = :userId")
-    fun loadAllByScheduleRange(startDate: Long, endDate: Long, userId: String): LiveData<List<Event>>
+    fun loadAllByScheduleRange(startDate: Long, endDate: Long, userId: String?): LiveData<List<Event>>
+
+    @Query("SELECT * FROM event WHERE (event_schedule BETWEEN :startDate AND :endDate) AND user_id IS NULL")
+    fun loadAllByScheduleRangeOffline(startDate: Long, endDate: Long): LiveData<List<Event>>
 
     @Query("SELECT * FROM event WHERE event_id = :eventId AND user_id = :userId")
     fun loadEvent(eventId: Int, userId: String): LiveData<Event>
+
+    @Query("SELECT * FROM event WHERE event_id = :eventId AND user_id IS NULL")
+    fun loadEventOffline(eventId: Int): LiveData<Event>
 
     @Query("SELECT * FROM event WHERE event_title LIKE :title AND user_id = :userId LIMIT 1")
     fun findByTitle(title: String, userId: String): LiveData<Event>
@@ -25,7 +34,7 @@ interface EventDao {
     @Insert
     fun insertAll(vararg events: Event)
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(event: Event)
 
     @Delete

@@ -15,13 +15,15 @@ import com.github.sazid1462.simpleeventcalendar.R
 import com.github.sazid1462.simpleeventcalendar.database.Event
 import com.github.sazid1462.simpleeventcalendar.viewmodel.EventViewModel
 import androidx.lifecycle.ViewModelProviders
+import com.github.sazid1462.simpleeventcalendar.EventCalendarApp
 import com.github.sazid1462.simpleeventcalendar.ui.DateTimeObject
 import com.github.sazid1462.simpleeventcalendar.ui.NO_OF_DAYS
+import com.google.firebase.database.DataSnapshot
 import java.sql.Date
 import kotlin.collections.ArrayList
 
 
-class EventsGridCellAdapter (private val context: Context, hostFragment: Fragment, private var dateList: ArrayList<Pair<DateTimeObject, Boolean>>) : BaseAdapter() {
+class EventsGridCellAdapter (private val context: Context, private val hostFragment: Fragment, private var dateList: ArrayList<Pair<DateTimeObject, Boolean>>) : BaseAdapter() {
 
     // First, let's obtain an instance of GregorianCalendar.
     private var cal = GregorianCalendar.getInstance()
@@ -30,32 +32,47 @@ class EventsGridCellAdapter (private val context: Context, hostFragment: Fragmen
         EventViewModel.EventViewModelFactory(hostFragment.activity!!.application,
             dateList[0].first.floorDateObject().time,
             dateList[NO_OF_DAYS -1].first.ceilDateObject().time)).get(EventViewModel::class.java)
+    private var mRepository = (hostFragment.activity?.application as EventCalendarApp).repository
+
+    private var observerRoomDatabase: Observer<List<Event>>? = null
+    private var observerFirebaseDatabase: Observer<DataSnapshot>? = null
 
     init {
 //        mEventViewModel.events.observe(hostFragment,
-        mEventViewModel.events.observe(hostFragment,
-            Observer<List<Event>> { events ->
-                // Update the cached copy of the words in the adapter.
-                mEvents = ArrayList(70)
-                mEvents.addAll(arrayOfNulls(70))
-                val cnt: Array<Int> = arrayOf(0, 0, 0, 0, 0, 0, 0)
-                if (events != null) {
-                    events.forEach { event ->
-                        run {
-                            val schedule =
-                                DateTimeObject.new(Date(event.eventSchedule!!))
-                            val idx = (schedule.day - dateList[0].first.day) + (cnt[schedule.day - dateList[0].first.day] * NO_OF_DAYS)
-                            if (idx >= mEvents.size) {
-                                val shortage = (idx - mEvents.size + 1)
-                                mEvents.addAll(arrayOfNulls(((shortage+7)/7)*7))
-                            }
-                            mEvents[idx] = event
-                            cnt[schedule.day - dateList[0].first.day] ++
+        observerRoomDatabase = createRoomDatabaseObserver()
+        mEventViewModel.events.observe(hostFragment, observerRoomDatabase!!)
+        observerFirebaseDatabase = createFirebaseObserver()
+        mEventViewModel.firebaseLiveData.observe(hostFragment, observerFirebaseDatabase!!)
+    }
+
+    private fun createFirebaseObserver(): Observer<DataSnapshot> =
+        Observer { dataSnapshot: DataSnapshot? -> mRepository.sync(dataSnapshot) }
+
+    private fun createRoomDatabaseObserver(): Observer<List<Event>> {
+        return Observer { events ->
+            // Update the cached copy of the words in the adapter.
+            mEvents = ArrayList(70)
+            mEvents.addAll(arrayOfNulls(70))
+            val cnt: Array<Int> = arrayOf(0, 0, 0, 0, 0, 0, 0)
+            if (events != null) {
+                events.forEach { event ->
+                    run {
+                        val schedule =
+                            DateTimeObject.new(Date(event.eventSchedule!!))
+                        val dayOfWeek = schedule.day - dateList[0].first.day
+                        if (dayOfWeek < 0) return@run
+                        val idx = (dayOfWeek) + (cnt[dayOfWeek] * NO_OF_DAYS)
+                        if (idx >= mEvents.size) {
+                            val shortage = (idx - mEvents.size + 1)
+                            mEvents.addAll(arrayOfNulls(((shortage + 7) / 7) * 7))
                         }
+                        mEvents[idx] = event
+                        cnt[schedule.day - dateList[0].first.day]++
                     }
-                    notifyDataSetInvalidated()
                 }
-            })
+                notifyDataSetInvalidated()
+            }
+        }
     }
 
     override fun getCount(): Int {
@@ -98,6 +115,7 @@ class EventsGridCellAdapter (private val context: Context, hostFragment: Fragmen
             if (mEvents[position- NO_OF_DAYS] != null) {
                 Log.d("CellAdapter getView",
                     "position $position \nId ${mEvents[position- NO_OF_DAYS]?.eventId}" +
+                            "\nUser ID ${mEvents[position- NO_OF_DAYS]?.userId}" +
                             "\nTitle ${mEvents[position- NO_OF_DAYS]?.eventTitle}" +
                             "\nNote ${mEvents[position- NO_OF_DAYS]?.eventNote}" +
                             "\nSchedule ${mEvents[position- NO_OF_DAYS]?.eventSchedule}" +
@@ -110,6 +128,12 @@ class EventsGridCellAdapter (private val context: Context, hostFragment: Fragmen
 //            cellView.background = context.getDrawable(R.drawable.rect_border)
         }
         return cellView
+    }
+
+    fun refresh() {
+        mEventViewModel.refresh()
+        notifyDataSetChanged()
+        Log.d("CellAdapter", "Refresh!!!!!!")
     }
 
 }

@@ -21,15 +21,15 @@ import com.google.firebase.auth.FirebaseUser
 
 
 class MainActivity : AppCompatActivity() {
-
+    private var isInit: Boolean = false
     private var user: FirebaseUser? = null
     private lateinit var menu: Menu
     private var mAppExecutors: AppExecutors? = null
+    var fragment: CalendarFragment? = null
     // Choose authentication providers
     val providers = arrayListOf(
         AuthUI.IdpConfig.EmailBuilder().build(),
-        AuthUI.IdpConfig.GoogleBuilder().build(),
-        AuthUI.IdpConfig.AnonymousBuilder().build())
+        AuthUI.IdpConfig.GoogleBuilder().build())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +47,7 @@ class MainActivity : AppCompatActivity() {
                 .setLogo(R.mipmap.ic_launcher)      // Set logo drawable
                 .setTheme(R.style.AppTheme_Dialog)      // Set theme
                 .setIsSmartLockEnabled(false)
+                .enableAnonymousUsersAutoUpgrade()
                 .build(), RC_SIGN_IN
         )
     }
@@ -58,7 +59,7 @@ class MainActivity : AppCompatActivity() {
         val auth = FirebaseAuth.getInstance()
         if (auth.currentUser != null) {
             // already signed in
-            updateUI(auth.currentUser, menu)
+            onUserLogIn(auth.currentUser!!)
         } else {
             // not signed in
             // Create and launch sign-in intent
@@ -71,16 +72,22 @@ class MainActivity : AppCompatActivity() {
         this.user = user
         (application as EventCalendarApp).user = user
         // ...
-        val fragmentManager = supportFragmentManager
-        val fragmentTransaction = fragmentManager.beginTransaction()
-        val fragment = CalendarFragment.newInstance()
-        fragmentTransaction.add(R.id.container, fragment)
-        fragmentTransaction.commit()
+        if (!isInit) {
+            isInit = true
+            val fragmentManager = supportFragmentManager
+            val fragmentTransaction = fragmentManager.beginTransaction()
+            fragment = CalendarFragment.newInstance()
+            fragmentTransaction.add(R.id.container, fragment!!)
+            fragmentTransaction.commit()
 
-        fab.setOnClickListener { view ->
-            fragment.showCreateEventDialog(null)
+            fab.setOnClickListener { view ->
+                fragment!!.showCreateEventDialog(null)
+            }
+        } else {
+            fragment?.refresh()
         }
-        menu.getItem(0).title = getString(R.string.action_sign_out)
+        if (user != null) menu.getItem(0).title = getString(R.string.action_sign_out)
+        else menu.getItem(0).title = getString(R.string.action_sign_in)
     }
 
     fun showSignInAlertDialog(msg: String) {
@@ -96,7 +103,7 @@ class MainActivity : AppCompatActivity() {
 
             if (resultCode == Activity.RESULT_OK) {
                 // Successfully signed in
-                updateUI(FirebaseAuth.getInstance().currentUser, menu)
+                onUserLogIn(FirebaseAuth.getInstance().currentUser!!)
             } else {
                 // Sign in failed. If response is null the user canceled the
                 // sign-in flow using the back button. Otherwise check
@@ -113,6 +120,18 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun onUserLogIn(user: FirebaseUser) {
+        (application as EventCalendarApp).user = user
+        (application as EventCalendarApp).repository.onUserLogIn(user)
+        updateUI(user, menu)
+    }
+
+    fun startOffline() {
+        (application as EventCalendarApp).user = null
+        (application as EventCalendarApp).repository.onUserLogIn(null)
+        updateUI(null, menu)
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle item selection
         return when (item.itemId) {
@@ -121,11 +140,12 @@ class MainActivity : AppCompatActivity() {
                     showSignIn()
                 } else {
                     FirebaseAuth.getInstance().signOut()
-                    val intent = Intent(Intent.ACTION_MAIN)
-                    intent.addCategory(Intent.CATEGORY_HOME)
-                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                    startActivity(intent)
-                    finish()
+//                    val intent = Intent(Intent.ACTION_MAIN)
+//                    intent.addCategory(Intent.CATEGORY_HOME)
+//                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+//                    startActivity(intent)
+//                    finish()
+                    startOffline()
                 }
                 true
             }

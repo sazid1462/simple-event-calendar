@@ -18,6 +18,7 @@ import com.github.sazid1462.simpleeventcalendar.ui.adapters.CalendarGridCellAdap
 import com.github.sazid1462.simpleeventcalendar.ui.adapters.EventsGridCellAdapter
 import com.google.android.material.button.MaterialButton
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.math.abs
 
 
@@ -113,6 +114,12 @@ class CalendarFragment : Fragment() {
         val prevWeek: MaterialButton = rootView.findViewById(R.id.prev_button)
         prevWeek.setOnClickListener { v ->
             navigateCalendarWeek(-14)
+        }
+    }
+
+    fun refresh() {
+        activity?.runOnUiThread {
+            (eventsGridview.adapter as EventsGridCellAdapter).refresh()
         }
     }
 

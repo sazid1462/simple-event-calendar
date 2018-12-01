@@ -22,4 +22,5 @@
     <string name="update">Update</string>
     <string name="action_sign_in">Sign In</string>
     <string name="action_sign_out">Sign Out</string>
+    <string name="skip">Skip</string>
 </resources>

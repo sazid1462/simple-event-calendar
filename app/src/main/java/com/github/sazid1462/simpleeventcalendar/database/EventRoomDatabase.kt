@@ -1,14 +1,17 @@
 package com.github.sazid1462.simpleeventcalendar.database
 
 import android.content.Context
-import androidx.room.Database
-import androidx.room.RoomDatabase
-import androidx.room.Room
-import com.github.sazid1462.simpleeventcalendar.AppExecutors
 import androidx.annotation.NonNull
-import androidx.sqlite.db.SupportSQLiteDatabase
+import androidx.annotation.Nullable
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.room.Database
+import androidx.room.Room
+import androidx.room.RoomDatabase
+import androidx.sqlite.db.SupportSQLiteDatabase
+import com.github.sazid1462.simpleeventcalendar.AppExecutors
+import com.google.firebase.database.DataSnapshot
+import java.util.*
 
 
 @Database(entities = arrayOf(Event::class), version = 2)
@@ -64,14 +67,15 @@ abstract class EventRoomDatabase : RoomDatabase() {
                 .addCallback(object : RoomDatabase.Callback() {
                     override fun onCreate(@NonNull db: SupportSQLiteDatabase) {
                         super.onCreate(db)
+                        var database: EventRoomDatabase? = null
                         executors?.diskIO()?.execute {
                             // Add a delay to simulate a long-running operation
                             addDelay()
                             // Generate the data for pre-population
-                            val database = EventRoomDatabase.getInstance(appContext, executors)
+                            database = EventRoomDatabase.getInstance(appContext, executors)
 
                             // notify that the database was created and it's ready to be used
-                            database.setDatabaseCreated()
+                            database?.setDatabaseCreated()
                         }
                     }
                 })
