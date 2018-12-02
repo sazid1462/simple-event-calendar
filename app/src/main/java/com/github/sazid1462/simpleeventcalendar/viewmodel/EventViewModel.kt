@@ -8,7 +8,9 @@ import com.github.sazid1462.simpleeventcalendar.EventRepository
 import com.github.sazid1462.simpleeventcalendar.database.Event
 import com.github.sazid1462.simpleeventcalendar.ui.AsyncRunner
 
-
+/**
+ * The ViewModel class for moder MVVM pattern
+ */
 class EventViewModel(application: EventCalendarApp, private var startTime: Long,
                      private var endTime: Long) : AndroidViewModel(application) {
     private val mRepository: EventRepository = application.repository
@@ -20,6 +22,9 @@ class EventViewModel(application: EventCalendarApp, private var startTime: Long,
         events.addSource(dataSource) { value -> events.setValue(value) }
     }
 
+    /**
+     * function to allow updating the dataset from outside
+     */
     fun updateDataSet(startTime: Long, endTime: Long) {
         this.startTime = startTime
         this.endTime = endTime
@@ -37,6 +42,9 @@ class EventViewModel(application: EventCalendarApp, private var startTime: Long,
 
     }
 
+    /**
+     * To allow force refresh from outside in case of login event
+     */
     fun refresh() {
         var newDataSource: LiveData<List<Event>>? = null
         AsyncRunner(
@@ -52,6 +60,9 @@ class EventViewModel(application: EventCalendarApp, private var startTime: Long,
 
     }
 
+    /**
+     * Custom factory class as we have extra parameters in our EventViewModel
+     */
     class EventViewModelFactory(
         private val mApplication: Application,
         private val startTime: Long,

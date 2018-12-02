@@ -1,34 +1,23 @@
 package com.github.sazid1462.simpleeventcalendar.ui.fragments
 
-import android.annotation.SuppressLint
 import android.app.Dialog
-import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.github.sazid1462.simpleeventcalendar.R
-import com.github.sazid1462.simpleeventcalendar.database.Event
 import com.github.sazid1462.simpleeventcalendar.ui.MainActivity
-import java.util.*
-import android.content.Intent
 
-
-
-
+/**
+ * Simple dialog for showing SingIn msgs
+ */
 class SignInAlertDialogFragment : DialogFragment() {
 
-    private lateinit var rootView: View
     private lateinit var msg: String
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let {
             // Use the Builder class for convenient dialog construction
             val builder = AlertDialog.Builder(it)
-            // Inflate and set the layout for the dialog
-            // Pass null as the parent view because its going in the dialog layout
 
             builder
                 .setTitle(getString(R.string.app_name))
@@ -50,8 +39,7 @@ class SignInAlertDialogFragment : DialogFragment() {
 
     companion object {
         /**
-         * Returns a new instance of this fragment for the given section
-         * number.
+         * Returns a new instance of this fragment for the given msg
          */
         fun newInstance(msg: String): SignInAlertDialogFragment {
             val fragment = SignInAlertDialogFragment()

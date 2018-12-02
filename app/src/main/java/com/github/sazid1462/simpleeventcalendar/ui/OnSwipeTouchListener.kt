@@ -8,7 +8,9 @@ import android.view.GestureDetector
 import android.view.View
 import android.view.View.OnTouchListener
 
-
+/**
+ * Custom OnSwipeTouchListener to implement the swipe to change calendar week action
+ */
 open class OnSwipeTouchListener(context: Context) : OnTouchListener {
 
     private val gestureDetector: GestureDetector
@@ -18,6 +20,9 @@ open class OnSwipeTouchListener(context: Context) : OnTouchListener {
         gestureDetector.setIsLongpressEnabled(false)
     }
 
+    /**
+     * @return true if no gesture is detected by the listener. otherwise false
+     */
     override fun onTouch(v: View, e: MotionEvent): Boolean {
         if (!gestureDetector.onTouchEvent(e) && !gestureDetector.onGenericMotionEvent(e)) {
             v.performClick()
@@ -26,6 +31,9 @@ open class OnSwipeTouchListener(context: Context) : OnTouchListener {
         return true
     }
 
+    /**
+     * Custom gesture listener class to ditect up, down, left, right swipe. We only needed left and right for the application though
+     */
     private inner class GestureListener : SimpleOnGestureListener() {
 
         private val SWIPE_THRESHOLD = 100

@@ -88,15 +88,18 @@ class CalendarFragment : Fragment() {
         val rootView = inflater.inflate(R.layout.fragment_calendar, container, false)
 
         activity?.runOnUiThread {
-            monthViewer = rootView.findViewById(R.id.month_viewer)
-            monthViewer.text =
-                    monthViewerText
+            registerMonthViewer(rootView)
             dateGridview = registerDateGridView(rootView)
             eventsGridview = registerEventsGridView(rootView)
             registerCalendarNavButtons(rootView)
             registerCalendarFragmentGestures(rootView)
         }
         return rootView
+    }
+
+    private fun registerMonthViewer(rootView: View) {
+        monthViewer = rootView.findViewById(R.id.month_viewer)
+        monthViewer.text = monthViewerText
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -221,8 +224,7 @@ class CalendarFragment : Fragment() {
             "${mMonths[cal.get(GregorianCalendar.MONTH)]} ${cal.get(GregorianCalendar.YEAR)}"
 
         /**
-         * Returns a new instance of this fragment for the given section
-         * number.
+         * Returns a new instance of this fragment
          */
         fun newInstance(): CalendarFragment {
             cal.time = Date()

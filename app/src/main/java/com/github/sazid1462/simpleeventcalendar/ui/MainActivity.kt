@@ -19,7 +19,9 @@ import com.github.sazid1462.simpleeventcalendar.ui.fragments.SignInAlertDialogFr
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 
-
+/**
+ * The MainActivity of the application
+ */
 class MainActivity : AppCompatActivity() {
     private var isInit: Boolean = false
     private var user: FirebaseUser? = null
@@ -35,10 +37,13 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
-        
+
         mAppExecutors = AppExecutors()
     }
 
+    /**
+     * To show the Sign In activity
+     */
     internal fun showSignIn() {
         startActivityForResult(
             AuthUI.getInstance()
@@ -46,7 +51,7 @@ class MainActivity : AppCompatActivity() {
                 .setAvailableProviders(providers)
                 .setLogo(R.mipmap.ic_launcher)      // Set logo drawable
                 .setTheme(R.style.AppTheme_Dialog)      // Set theme
-                .setIsSmartLockEnabled(false)
+                .setIsSmartLockEnabled(true)
                 .enableAnonymousUsersAutoUpgrade()
                 .build(), RC_SIGN_IN
         )
@@ -68,11 +73,14 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
+    /**
+     * Update the UI and the menu item according to the logged in status of user
+     */
     private fun updateUI(user: FirebaseUser?, menu: Menu) {
         this.user = user
         (application as EventCalendarApp).user = user
         // ...
-        if (!isInit) {
+        if (!isInit) { // If not already created the calendar fragment create and initialize
             isInit = true
             val fragmentManager = supportFragmentManager
             val fragmentTransaction = fragmentManager.beginTransaction()
@@ -80,6 +88,7 @@ class MainActivity : AppCompatActivity() {
             fragmentTransaction.add(R.id.container, fragment!!)
             fragmentTransaction.commit()
 
+            // Floating action button
             fab.setOnClickListener { view ->
                 fragment!!.showCreateEventDialog(null)
             }
@@ -140,11 +149,6 @@ class MainActivity : AppCompatActivity() {
                     showSignIn()
                 } else {
                     FirebaseAuth.getInstance().signOut()
-//                    val intent = Intent(Intent.ACTION_MAIN)
-//                    intent.addCategory(Intent.CATEGORY_HOME)
-//                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-//                    startActivity(intent)
-//                    finish()
                     startOffline()
                 }
                 true

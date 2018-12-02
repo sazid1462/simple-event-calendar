@@ -4,6 +4,9 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import com.google.firebase.database.*
 
+/**
+ * Class to hold the firebase realtime database live data
+ */
 class EventFirebaseLiveData: LiveData<DataSnapshot>() {
     private val LOG_TAG = "EventFirebaseLiveData"
 
@@ -35,6 +38,10 @@ class EventFirebaseLiveData: LiveData<DataSnapshot>() {
     }
 
     companion object {
+        /**
+         * Important note: database reference is also a query in terms of firebase database.
+         * That's why both function sets the value of query.
+         */
         fun getInstance(query: Query): EventFirebaseLiveData {
             val eventFirebaseLiveData = EventFirebaseLiveData()
             eventFirebaseLiveData.query = query

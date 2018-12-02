@@ -2,6 +2,9 @@ package com.github.sazid1462.simpleeventcalendar.ui
 
 import java.util.*
 
+/**
+ * Custom Class for conveniently holding the Date and Time.
+ */
 class DateTimeObject {
     var year: Int = 2018
     var month: Int = 1

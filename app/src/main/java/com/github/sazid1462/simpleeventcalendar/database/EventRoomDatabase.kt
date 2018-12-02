@@ -2,7 +2,6 @@ package com.github.sazid1462.simpleeventcalendar.database
 
 import android.content.Context
 import androidx.annotation.NonNull
-import androidx.annotation.Nullable
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.room.Database
@@ -10,8 +9,6 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.github.sazid1462.simpleeventcalendar.AppExecutors
-import com.google.firebase.database.DataSnapshot
-import java.util.*
 
 
 @Database(entities = arrayOf(Event::class), version = 2)
@@ -22,6 +19,10 @@ abstract class EventRoomDatabase : RoomDatabase() {
     /**
      * Check whether the database already exists and expose it via [.getDatabaseCreated]
      */
+    fun getDatabaseCreated(): LiveData<Boolean> {
+        return mIsDatabaseCreated
+    }
+
     private fun updateDatabaseCreated(context: Context) {
         if (context.getDatabasePath(DATABASE_NAME).exists()) {
             setDatabaseCreated()
@@ -30,10 +31,6 @@ abstract class EventRoomDatabase : RoomDatabase() {
 
     private fun setDatabaseCreated() {
         mIsDatabaseCreated.postValue(true)
-    }
-
-    fun getDatabaseCreated(): LiveData<Boolean> {
-        return mIsDatabaseCreated
     }
 
     companion object {
@@ -69,9 +66,7 @@ abstract class EventRoomDatabase : RoomDatabase() {
                         super.onCreate(db)
                         var database: EventRoomDatabase? = null
                         executors?.diskIO()?.execute {
-                            // Add a delay to simulate a long-running operation
-                            addDelay()
-                            // Generate the data for pre-population
+                            // get the database instance
                             database = EventRoomDatabase.getInstance(appContext, executors)
 
                             // notify that the database was created and it's ready to be used
@@ -79,17 +74,8 @@ abstract class EventRoomDatabase : RoomDatabase() {
                         }
                     }
                 })
-                .fallbackToDestructiveMigration()
-//            .addMigrations(MIGRATION_1_2)
+                .fallbackToDestructiveMigration() // Destructive migration as we don't actually need the old data for the demo app.
                 .build()
-        }
-
-        private fun addDelay() {
-            try {
-                Thread.sleep(4000)
-            } catch (ignored: InterruptedException) {
-            }
-
         }
     }
 }

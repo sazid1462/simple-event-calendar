@@ -23,6 +23,9 @@ import java.sql.Date
 import kotlin.collections.ArrayList
 
 
+/**
+ * Adapter class for the actual event grid below the calendar grid
+ */
 class EventsGridCellAdapter (private val context: Context, private val hostFragment: Fragment, private var dateList: ArrayList<Pair<DateTimeObject, Boolean>>) : BaseAdapter() {
 
     // First, let's obtain an instance of GregorianCalendar.

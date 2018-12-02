@@ -15,7 +15,9 @@ import com.github.sazid1462.simpleeventcalendar.R
 import com.github.sazid1462.simpleeventcalendar.database.Event
 import java.util.*
 
-
+/**
+ * DialogFragment to show the events details. It also give opportunity to delete or edit the event.
+ */
 class ShowEventFragment  : DialogFragment() {
     var event: Event? = null
 //    var dateTimeObject: DateTimeObject? = null
@@ -65,18 +67,13 @@ class ShowEventFragment  : DialogFragment() {
 
     companion object {
         /**
-         * Returns a new instance of this fragment for the given section
-         * number.
+         * Returns a new instance of this fragment for the given event
          */
         fun newInstance(event: Event): DialogFragment {
             val fragment = ShowEventFragment()
             val args = Bundle()
             fragment.arguments = args
-
-//            val dateTimeObject: DateTimeObject = DateTimeObject.new(Date(event.eventSchedule!!))
-//            fragment.dateTimeObject = dateTimeObject
             fragment.event = event
-
             return fragment
         }
     }
